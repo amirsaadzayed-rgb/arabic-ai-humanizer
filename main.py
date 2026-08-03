@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 import requests
-import os
 
 app = FastAPI()
 
-# المفاتيح مباشرة لمنع أي خطأ على سيرفرات الاستضافة
+# مفتاح الاتصال المباشر لضمان استقرار العمل على السيرفر
 GROG_API_KEY = "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"
 
 @app.get("/", response_class=HTMLResponse)
@@ -16,11 +15,20 @@ async def home():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>أداة تحويل النصوص إلى أسلوب بشري</title>
+        <title>أداة إعادة صياغة النصوص العربية بأسلوب بشري</title>
         <style>
+            :root {
+                --primary: #4f46e5;
+                --primary-hover: #4338ca;
+                --bg-color: #f8fafc;
+                --card-bg: #ffffff;
+                --text-main: #1e293b;
+                --border-color: #cbd5e1;
+            }
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f4f7f6;
+                background-color: var(--bg-color);
+                color: var(--text-main);
                 margin: 0;
                 padding: 20px;
                 display: flex;
@@ -29,102 +37,156 @@ async def home():
                 min-height: 100vh;
             }
             .container {
-                background: #ffffff;
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                background: var(--card-bg);
+                padding: 35px;
+                border-radius: 16px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
                 width: 100%;
-                max-width: 700px;
+                max-width: 750px;
             }
             h1 {
-                color: #2c3e50;
+                color: var(--primary);
                 text-align: center;
                 margin-bottom: 25px;
-                font-size: 24px;
+                font-size: 26px;
+            }
+            .form-group {
+                margin-bottom: 20px;
             }
             label {
-                font-weight: bold;
-                color: #34495e;
+                font-weight: 600;
                 display: block;
                 margin-bottom: 8px;
             }
             textarea {
                 width: 100%;
-                height: 150px;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
+                height: 160px;
+                padding: 14px;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
                 font-size: 16px;
                 resize: vertical;
                 box-sizing: border-box;
-                margin-bottom: 15px;
+                transition: border-color 0.2s;
             }
             textarea:focus {
-                border-color: #3498db;
+                border-color: var(--primary);
                 outline: none;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+            .stats {
+                display: flex;
+                justify-content: space-between;
+                font-size: 13px;
+                color: #64748b;
+                margin-top: 5px;
+                margin-bottom: 15px;
+            }
+            .btn-container {
+                display: flex;
+                gap: 10px;
             }
             button {
-                background-color: #3498db;
+                background-color: var(--primary);
                 color: white;
                 border: none;
-                padding: 12px 20px;
+                padding: 14px 20px;
                 font-size: 16px;
-                border-radius: 8px;
+                font-weight: 600;
+                border-radius: 10px;
                 cursor: pointer;
                 width: 100%;
-                transition: background 0.3s;
+                transition: background 0.2s, transform 0.1s;
             }
             button:hover {
-                background-color: #2980b9;
+                background-color: var(--primary-hover);
+            }
+            button:active {
+                transform: scale(0.99);
             }
             .result-box {
                 margin-top: 25px;
-                background: #ecf0f1;
-                padding: 15px;
-                border-radius: 8px;
-                border-right: 5px solid #2ecc71;
+                background: #f1f5f9;
+                padding: 20px;
+                border-radius: 10px;
+                border-right: 5px solid #10b981;
                 display: none;
+                position: relative;
             }
             .result-box h3 {
                 margin-top: 0;
-                color: #27ae60;
+                color: #059669;
+                font-size: 18px;
+            }
+            .copy-btn {
+                background-color: #10b981;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                font-size: 13px;
+                border-radius: 6px;
+                cursor: pointer;
+                margin-top: 12px;
+                width: auto;
+                display: inline-block;
+            }
+            .copy-btn:hover {
+                background-color: #059669;
             }
             .loading {
                 text-align: center;
-                color: #e67e22;
-                font-weight: bold;
+                color: #d97706;
+                font-weight: 600;
                 display: none;
-                margin-top: 15px;
+                margin-top: 20px;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>✍️ أداة إعادة صياغة النصوص العربية بأسلوب بشري</h1>
+            <h1>✍️ أداة إعادة صياغة النصوص بأسلوب بشري</h1>
             <form id="humanizeForm">
-                <label for="text">الصق النص المكتوب بالذكاء الاصطناعي هنا:</label>
-                <textarea id="text" name="text" placeholder="اكتب أو الصق النص هنا..." required></textarea>
-                <button type="submit">إعادة صياغة النص (جعلها بشرية)</button>
+                <div class="form-group">
+                    <label for="text">الصق النص المكتوب بالذكاء الاصطناعي هنا:</label>
+                    <textarea id="text" name="text" placeholder="اكتب أو الصق النص هنا..." oninput="updateStats()" required></textarea>
+                    <div class="stats">
+                        <span id="charCount">عدد الحروف: 0</span>
+                        <span id="wordCount">عدد الكلمات: 0</span>
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <button type="submit" id="submitBtn">إحداث صياغة بشرية طبيعية</button>
+                </div>
             </form>
             
-            <div id="loading" class="loading">⏳ جارٍ معالجة النص وإعادة صياغته بذكاء...</div>
+            <div id="loading" class="loading">⏳ جارٍ تحليل النص وإعادة صياغته ببراعة...</div>
 
             <div id="resultBox" class="result-box">
-                <h3>النص بعد التعديل (أسلوب طبيعي):</h3>
-                <p id="resultText" style="white-space: pre-wrap; line-height: 1.6;"></p>
+                <h3>النص المُعدّل (أسلوب طبيعي):</h3>
+                <p id="resultText" style="white-space: pre-wrap; line-height: 1.7; margin-bottom: 10px;"></p>
+                <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
             </div>
         </div>
 
         <script>
+            function updateStats() {
+                const text = document.getElementById('text').value;
+                document.getElementById('charCount').innerText = 'عدد الحروف: ' + text.length;
+                const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
+                document.getElementById('wordCount').innerText = 'عدد الكلمات: ' + words;
+            }
+
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const text = document.getElementById('text').value;
                 const loading = document.getElementById('loading');
                 const resultBox = document.getElementById('resultBox');
                 const resultText = document.getElementById('resultText');
+                const submitBtn = document.getElementById('submitBtn');
 
                 loading.style.display = 'block';
                 resultBox.style.display = 'none';
+                submitBtn.disabled = true;
 
                 try {
                     const response = await fetch('/humanize', {
@@ -137,6 +199,7 @@ async def home():
 
                     const data = await response.json();
                     loading.style.display = 'none';
+                    submitBtn.disabled = false;
 
                     if (response.ok) {
                         resultText.innerText = data.result;
@@ -146,9 +209,17 @@ async def home():
                     }
                 } catch (err) {
                     loading.style.display = 'none';
+                    submitBtn.disabled = false;
                     alert('خطأ في الاتصال بالخادم');
                 }
             });
+
+            function copyResult() {
+                const textToCopy = document.getElementById('resultText').innerText;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alert('تم نسخ النص بنجاح!');
+                });
+            }
         </script>
     </body>
     </html>
@@ -162,7 +233,7 @@ async def humanize_text(text: str = Form(...)):
         "Content-Type": "application/json"
     }
     
-    prompt = f"""قم بإعادة صياغة النص العربي التالي ليبدو كأنه مكتوب بواسطة كاتب بشري محترف وطبيعي تماماً، وتجنب تماماً التعبير الروبوتي أو المكرر الخاص بالذكاء الاصطناعي، واجعله سلساً ومترابطاً:
+    prompt = f"""قم بإعادة صياغة النص العربي التالي ليبدو تماماً كأنه مكتوب بواسطة كاتب بشري محترف وطبيعي، وتجنب تماماً التعبيرات النمطية أو الآلية، واجعله سلساً، جذاباً، ومترابطاً:
 
 النص الأصلي:
 {text}"""
@@ -170,7 +241,7 @@ async def humanize_text(text: str = Form(...)):
     payload = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "أنت محرر وصحفي محترف متخصص في صياغة المقالات العربية بأسلوب بشري طبيعي وجذاب."},
+            {"role": "system", "content": "أنت محرر وصحفي محترف خبير في صياغة المحتوى العربي بأسلوب بشري طبيعي وجذاب."},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.7
