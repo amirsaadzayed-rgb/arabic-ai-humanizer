@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 import requests
+import json
 
 app = FastAPI()
 
@@ -363,7 +364,6 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
-            <!-- شريط النسب الديناميكي -->
             <div id="metricsBar" class="metrics-bar">
                 <div class="metric-box">
                     <div class="metric-row">
@@ -382,7 +382,6 @@ async def home():
             </div>
 
             <div class="editors-grid">
-                <!-- اليمين: النص الأصلي -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص الأصلي (الذكاء الاصطناعي)</span>
@@ -395,7 +394,6 @@ async def home():
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
                 </div>
 
-                <!-- اليسار: النص المولد بشرياً -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص المولد بشرياً (الناتج النهائي)</span>
@@ -410,7 +408,6 @@ async def home():
             </div>
         </div>
 
-        <!-- Pricing Modal ($) -->
         <div id="pricingModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
@@ -444,7 +441,6 @@ async def home():
             </div>
         </div>
 
-        <!-- History Modal -->
         <div id="historyModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeHistoryModal()">إغلاق</button>
@@ -453,7 +449,6 @@ async def home():
             </div>
         </div>
 
-        <!-- Diff / Highlighting Modal -->
         <div id="diffModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeDiffModal()">إغلاق</button>
@@ -508,7 +503,6 @@ async def home():
                 const resWords = resultText.trim().split(/\\s+/);
 
                 let highlightedHTML = resWords.map(word => {
-                    // إذا كانت الكلمة غير موجودة في النص الأصلي، يتم تظليلها ككلمة جديدة/معدلة
                     if (!origWords.includes(word)) {
                         return `<span class="highlight-changed">${word}</span>`;
                     }
@@ -579,7 +573,6 @@ async def home():
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
 
-                        // حساب نسب ديناميكية واقعية بناءً على طول التغيير أو محاكاة نسب بشرية عالية (مثل 88% - 94%)
                         const humanScore = Math.floor(Math.random() * (96 - 88 + 1)) + 88;
                         const aiScore = 100 - humanScore;
 
@@ -645,7 +638,8 @@ async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس
     }
 
     try:
-        response = requests.post(url, json.dumps(payload), headers=headers)
+        # استخدام معاملات requests الصحيحة بدون الحاجة لـ json.dumps اليدوية
+        response = requests.post(url, json=payload, headers=headers)
         res_data = response.json()
         if "choices" in res_data:
             output_text = res_data["choices"][0]["message"]["content"]
