@@ -78,6 +78,7 @@ async def home():
                 display: flex;
                 gap: 6px;
                 align-items: center;
+                flex-wrap: wrap;
             }
             .badge {
                 background: #1e293b;
@@ -91,6 +92,17 @@ async def home():
             }
             .upgrade-btn {
                 background: linear-gradient(135deg, #8b5cf6, #6366f1);
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 8px;
+                font-size: 11px;
+                font-weight: bold;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            .login-btn {
+                background: #0284c7;
                 color: white;
                 border: none;
                 padding: 5px 10px;
@@ -265,7 +277,7 @@ async def home():
                 padding: 20px;
                 border-radius: 14px;
                 width: 100%;
-                max-width: 750px;
+                max-width: 500px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
                 max-height: 85vh;
                 overflow-y: auto;
@@ -273,7 +285,7 @@ async def home():
             }
             .pricing-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 12px;
                 margin-top: 15px;
             }
@@ -283,12 +295,6 @@ async def home():
                 border-radius: 10px;
                 padding: 12px;
                 text-align: center;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-            }
-            .price-card.pro {
-                border-color: #8b5cf6;
             }
             .close-modal {
                 background: #ef4444;
@@ -315,45 +321,15 @@ async def home():
                 border-radius: 3px;
             }
 
-            /* تحسينات فائقة الدقة للموبايل والشاشات الصغيرة */
             @media (max-width: 768px) {
                 body { padding: 4px; }
                 .container { padding: 10px; border-radius: 12px; }
-                .header-bar {
-                    flex-direction: column;
-                    align-items: stretch;
-                    gap: 8px;
-                }
-                .logo-area {
-                    justify-content: space-between;
-                }
-                .top-badges {
-                    justify-content: space-between;
-                    width: 100%;
-                }
-                .badge, .upgrade-btn {
-                    flex: 1;
-                    text-align: center;
-                    padding: 8px 6px;
-                    font-size: 11px;
-                }
-                .controls-grid {
-                    grid-template-columns: 1fr;
-                    gap: 8px;
-                }
-                .editors-grid {
-                    grid-template-columns: 1fr;
-                    gap: 10px;
-                }
-                .metrics-bar {
-                    grid-template-columns: 1fr;
-                }
-                .pricing-grid {
-                    grid-template-columns: 1fr;
-                }
-                textarea {
-                    height: 140px;
-                }
+                .header-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+                .logo-area { justify-content: space-between; }
+                .top-badges { justify-content: space-between; width: 100%; }
+                .badge, .upgrade-btn, .login-btn { flex: 1; text-align: center; padding: 8px 6px; font-size: 11px; }
+                .controls-grid, .editors-grid, .metrics-bar { grid-template-columns: 1fr; }
+                textarea { height: 140px; }
             }
         </style>
     </head>
@@ -365,8 +341,9 @@ async def home():
                     <span>Pro</span>
                 </div>
                 <div class="top-badges">
+                    <button class="login-btn" id="loginBtnText" onclick="openLoginModal()">👤 تسجيل الدخول</button>
                     <div class="badge">المحاولات: <span id="attemptsCount" dir="ltr">3/3</span></div>
-                    <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية الباقة</button>
+                    <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية</button>
                     <div class="badge" onclick="openHistoryModal()">📜 السجل</div>
                 </div>
             </div>
@@ -442,34 +419,40 @@ async def home():
             </div>
         </div>
 
-        <div id="pricingModal" class="modal-overlay">
+        <!-- نافذة تسجيل الدخول -->
+        <div id="loginModal" class="modal-overlay">
             <div class="modal-content">
+                <button class="close-modal" onclick="closeLoginModal()">إغلاق</button>
+                <h2 style="margin-top:0; color:#fff; font-size:18px;">تسجيل الدخول / حساب المستخدم</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">أدخل بريدك الإلكتروني لحفظ محاولاتك المجانية وحسابك بأمان:</p>
+                <input type="email" id="userEmailInput" placeholder="name@example.com" style="width:100%; padding:10px; background:#0f172a; border:1px solid var(--border-color); color:white; border-radius:8px; margin:10px 0; box-sizing:border-box; outline:none;">
+                <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #6366f1); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="saveUserLogin()">دخول / حفظ الحساب</button>
+            </div>
+        </div>
+
+        <!-- نافذة الأسعار -->
+        <div id="pricingModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 750px;">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
                 <h2 style="margin-top:0; color:#fff; text-align:center; font-size:18px;">اختر الباقة المناسبة لك</h2>
-                <div class="pricing-grid">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:15px;">
                     <div class="price-card">
-                        <div>
-                            <h3 style="color:#94a3b8; margin-top:0; font-size:15px;">المجانية</h3>
-                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
-                            <p style="font-size:11px; color:#94a3b8;">3 محاولات يومياً</p>
-                        </div>
+                        <h3 style="color:#94a3b8; margin-top:0; font-size:15px;">المجانية</h3>
+                        <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
+                        <p style="font-size:11px; color:#94a3b8;">3 محاولات يومياً</p>
                         <button style="width:100%; padding:8px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:8px; font-size:12px;" onclick="closePricingModal()">باقتك الحالية</button>
                     </div>
                     <div class="price-card">
-                        <div>
-                            <h3 style="color:#38bdf8; margin-top:0; font-size:15px;">المحددة</h3>
-                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$10 / mo</p>
-                            <p style="font-size:11px; color:#94a3b8;">50 مقال شهرياً</p>
-                        </div>
-                        <button style="width:100%; padding:8px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
+                        <h3 style="color:#38bdf8; margin-top:0; font-size:15px;">المحددة</h3>
+                        <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$10 / mo</p>
+                        <p style="font-size:11px; color:#94a3b8;">50 مقال شهرياً</p>
+                        <button style="width:100%; padding:8px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً تفعيل بوابات الدفع!')">اشترك الآن</button>
                     </div>
-                    <div class="price-card pro">
-                        <div>
-                            <h3 style="color:#8b5cf6; margin-top:0; font-size:15px;">باقة Pro</h3>
-                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$25 / mo</p>
-                            <p style="font-size:11px; color:#94a3b8;">غير محدودة</p>
-                        </div>
-                        <button style="width:100%; padding:8px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
+                    <div class="price-card" style="border-color:#8b5cf6;">
+                        <h3 style="color:#8b5cf6; margin-top:0; font-size:15px;">باقة Pro</h3>
+                        <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$25 / mo</p>
+                        <p style="font-size:11px; color:#94a3b8;">غير محدودة</p>
+                        <button style="width:100%; padding:8px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً تفعيل بوابات الدفع!')">اشترك الآن</button>
                     </div>
                 </div>
             </div>
@@ -487,29 +470,74 @@ async def home():
             <div class="modal-content">
                 <button class="close-modal" onclick="closeDiffModal()">إغلاق</button>
                 <h2 style="margin-top:0; color:#fff; font-size:18px;">تظليل التعديلات الجديدة</h2>
-                <p style="font-size: 12px; color: var(--text-muted);">الكلمات المظللة باللون الأصفر هي التغييرات الجذرية لتحويل النص إلى سياق بشري:</p>
+                <p style="font-size: 12px; color: var(--text-muted);">الكلمات المظللة باللون الأصفر هي التغييرات الجذرية:</p>
                 <div id="diffContainer" style="background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 12px; line-height: 1.7; font-size: 14px; color: #fff; max-height: 50vh; overflow-y: auto;"></div>
             </div>
         </div>
 
         <script>
+            // البريد الخاص بك كمدير (يمكنك تغليفه ببريدك الشخصي لفتح محاولات غير محدودة ∞ تلقائياً)
+            const ADMIN_EMAIL = "your-email@gmail.com"; 
+
+            let currentUser = localStorage.getItem('ai_user_email') || '';
             let maxAttempts = 3;
-            let currentAttempts = localStorage.getItem('ai_humanizer_attempts');
-            if (currentAttempts === null) {
-                currentAttempts = maxAttempts;
-                localStorage.setItem('ai_humanizer_attempts', currentAttempts);
-            } else {
-                currentAttempts = parseInt(currentAttempts);
+            let currentAttempts = maxAttempts;
+
+            function checkUserAttempts() {
+                if (!currentUser) {
+                    document.getElementById('attemptsCount').innerText = '3/3 (زائر)';
+                    document.getElementById('loginBtnText').innerText = '👤 تسجيل الدخول';
+                    currentAttempts = 3;
+                    return;
+                }
+
+                // لو أنت المدير، محاولاتك غير محدودة دائماً
+                if (currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    document.getElementById('attemptsCount').innerText = '∞ (مدير)';
+                    document.getElementById('loginBtnText').innerText = '👑 ' + currentUser.split('@')[0];
+                    currentAttempts = 999999; // بلا حدود
+                    return;
+                }
+
+                // حسابات المستخدمين العاديين
+                document.getElementById('loginBtnText').innerText = '👤 ' + currentUser.split('@')[0];
+                let savedAttempts = localStorage.getItem('attempts_' + currentUser);
+                if (savedAttempts === null) {
+                    currentAttempts = maxAttempts;
+                    localStorage.setItem('attempts_' + currentUser, currentAttempts);
+                } else {
+                    currentAttempts = parseInt(savedAttempts);
+                }
+                document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
             }
-            document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+
+            checkUserAttempts();
+
+            function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+            function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+            
+            function saveUserLogin() {
+                const email = document.getElementById('userEmailInput').value.trim();
+                if(!email || !email.includes('@')) {
+                    alert('الرجاء إدخال بريد إلكتروني صحيح');
+                    return;
+                }
+                localStorage.setItem('ai_user_email', email);
+                currentUser = email;
+                closeLoginModal();
+                checkUserAttempts();
+                alert('تم تسجيل الدخول بنجاح بحساب: ' + email);
+            }
 
             function openPricingModal() { document.getElementById('pricingModal').style.display = 'flex'; }
             function closePricingModal() { document.getElementById('pricingModal').style.display = 'none'; }
+            
             function openHistoryModal() {
                 const container = document.getElementById('historyContainer');
-                let history = JSON.parse(localStorage.getItem('ai_humanizer_history') || '[]');
+                let historyKey = 'ai_history_' + (currentUser || 'guest');
+                let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
                 if (history.length === 0) {
-                    container.innerHTML = '<p style="color: #94a3b8; text-align: center;">لا توجد محاولات مسجلة حتى الآن.</p>';
+                    container.innerHTML = '<p style="color: #94a3b8; text-align: center;">لا توجد محاولات مسجلة لهذا الحساب.</p>';
                 } else {
                     container.innerHTML = history.map((item, index) => `
                         <div class="history-item">
@@ -565,7 +593,16 @@ async def home():
 
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                if (currentAttempts <= 0) {
+
+                // لو لم يسجل دخول، نطلب منه تسجيل الدخول أولاً لتثبيت حسابه
+                if (!currentUser) {
+                    openLoginModal();
+                    alert('الرجاء تسجيل الدخول ببريدك الإلكتروني أولاً لبدء استخدام المحاولات المجانية');
+                    return;
+                }
+
+                // فحص المحاولات (باستثناء حساب المدير الخاص بك)
+                if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && currentAttempts <= 0) {
                     openPricingModal();
                     return;
                 }
@@ -600,9 +637,12 @@ async def home():
                         const resWords = data.result.trim().split(/\\s+/).length;
                         document.getElementById('resWordCount').innerText = resWords + ' كلمة';
                         
-                        currentAttempts--;
-                        localStorage.setItem('ai_humanizer_attempts', currentAttempts);
-                        document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+                        // خصم المحاولة إذا لم يكن حساب المدير
+                        if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                            currentAttempts--;
+                            localStorage.setItem('attempts_' + currentUser, currentAttempts);
+                            document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+                        }
 
                         const humanScore = Math.floor(Math.random() * (96 - 88 + 1)) + 88;
                         const aiScore = 100 - humanScore;
@@ -613,20 +653,21 @@ async def home():
                         document.getElementById('humanMetricVal').innerText = humanScore + '%';
                         document.getElementById('humanBar').style.width = humanScore + '%';
 
-                        let history = JSON.parse(localStorage.getItem('ai_humanizer_history') || '[]');
+                        let historyKey = 'ai_history_' + currentUser;
+                        let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
                         history.unshift({
                             tone: tone,
                             date: new Date().toLocaleString(),
                             result: data.result.substring(0, 100) + '...'
                         });
-                        localStorage.setItem('ai_humanizer_history', JSON.stringify(history));
+                        localStorage.setItem(historyKey, JSON.stringify(history));
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
                     }
                 } catch (err) {
                     loading.style.display = 'none';
-                    submitBtn.disabled = false;
+                    submitBtn.disabled, (submitBtn.disabled = false);
                     alert('خطأ في الاتصال بالخادم، تأكد من اتصال الإنترنت');
                 }
             });
