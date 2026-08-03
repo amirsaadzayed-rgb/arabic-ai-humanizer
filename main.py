@@ -8,11 +8,9 @@ app = FastAPI()
 GROG_API_KEY = "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"
 
 def analyze_article_metrics(original_text: str, result_text: str):
-    # النص الأصلي مكتوب بالذكاء الاصطناعي، لذا نسبته الآلية يجب أن تكون عالية ومنطقية (بين 88% و 96%)
     orig_hash = sum(ord(c) for c in original_text) if original_text else 50
     original_ai_score = 88 + (orig_hash % 9)
     
-    # النص الناتج تم تنسيقه بشرياً، لذا نسبة الصياغة البشرية فيه يجب أن تكون عالية (بين 92% و 99%)
     res_hash = sum(ord(c) for c in result_text) if result_text else 50
     result_human_score = 92 + (res_hash % 8)
     
@@ -270,7 +268,6 @@ async def home():
                 font-size: 13px;
                 display: none;
             }
-            /* Modals */
             .modal-overlay {
                 position: fixed;
                 top: 0; left: 0; width: 100%; height: 100%;
@@ -380,7 +377,6 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة العميقة والتحليل الدقيق...</div>
             </form>
 
-            <!-- شريط النسب المئوية (اليمين: نسبة الذكاء الاصطناعي للأصل - اليسار: التنسيق البشري للناتج) -->
             <div id="metricsBar" class="metrics-bar">
                 <div class="metric-box">
                     <div class="metric-row">
@@ -425,18 +421,16 @@ async def home():
             </div>
         </div>
 
-        <!-- نافذة تسجيل الدخول -->
         <div id="loginModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeLoginModal()">إغلاق</button>
                 <h2 style="margin-top:0; color:#fff; font-size:18px;">تسجيل الدخول / حساب المستخدم</h2>
-                <p style="font-size: 12px; color: var(--text-muted);">أدخل بريدك الإلكتروني لحفظ محاولاتك المجانية وحسابك بأمان:</p>
+                <p style="font-size: 12px; color: var(--text-muted);">أدخل بريدك الإلكتروني لحفظ محاولاتك وحسابك بأمان:</p>
                 <input type="email" id="userEmailInput" placeholder="name@example.com" style="width:100%; padding:10px; background:#0f172a; border:1px solid var(--border-color); color:white; border-radius:8px; margin:10px 0; box-sizing:border-box; outline:none;">
                 <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #6366f1); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="saveUserLogin()">دخول / حفظ الحساب</button>
             </div>
         </div>
 
-        <!-- نافذة الأسعار -->
         <div id="pricingModal" class="modal-overlay">
             <div class="modal-content" style="max-width: 750px;">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
@@ -482,14 +476,11 @@ async def home():
         </div>
 
         <script>
-            // تثبيت بريدك الإلكتروني كمدير للموقع وصلاحيات مطلقة
+            // تعريف إيميل المدير الحصري الخاص بك
             const ADMIN_EMAIL = "amirsaadzayed@gmail.com"; 
 
-            let currentUser = localStorage.getItem('ai_user_email') || ADMIN_EMAIL;
-            if (!localStorage.getItem('ai_user_email')) {
-                localStorage.setItem('ai_user_email', ADMIN_EMAIL);
-                currentUser = ADMIN_EMAIL;
-            }
+            // لا يتم فرض أي إيميل تلقائياً على الزوار الجدد
+            let currentUser = localStorage.getItem('ai_user_email') || null;
 
             let maxAttempts = 3;
             let currentAttempts = maxAttempts;
@@ -502,6 +493,7 @@ async def home():
                     return;
                 }
 
+                // إذا كان الإيميل المدخل هو إيميل المدير الخاص بك، تمنح الصلاحيات المطلقة
                 if (currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('attemptsCount').innerText = '∞ (مدير)';
                     document.getElementById('loginBtnText').innerText = '👑 ' + currentUser.split('@')[0];
@@ -650,7 +642,6 @@ async def home():
                             document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
                         }
 
-                        // عرض النسب الحقيقية الصحيحة (اليمين AI للأصل - اليسار بشري للناتج)
                         document.getElementById('metricsBar').style.display = 'grid';
                         document.getElementById('aiMetricVal').innerText = data.original_ai_score + '%';
                         document.getElementById('aiBar').style.width = data.original_ai_score + '%';
@@ -718,7 +709,6 @@ async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس
         res_data = response.json()
         if "choices" in res_data:
             output_text = res_data["choices"][0]["message"]["content"]
-            # تحليل دقيق: تقييم النص الأصلي كـ AI والنص الناتج كـ Human
             original_ai_score, result_human_score = analyze_article_metrics(text, output_text)
             return {
                 "result": output_text,
