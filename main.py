@@ -20,7 +20,6 @@ async def home():
                 --bg-main: #0b0f19;
                 --card-bg: #131b2e;
                 --primary: #8b5cf6;
-                --primary-hover: #7c3aed;
                 --text-main: #f8fafc;
                 --text-muted: #94a3b8;
                 --border-color: #1e293b;
@@ -92,10 +91,6 @@ async def home():
                 border-radius: 8px;
                 font-weight: bold;
                 cursor: pointer;
-                transition: opacity 0.2s;
-            }
-            .upgrade-btn:hover {
-                opacity: 0.85;
             }
             .controls-grid {
                 display: grid;
@@ -124,10 +119,6 @@ async def home():
                 color: white;
                 font-weight: bold;
                 cursor: pointer;
-                transition: opacity 0.2s;
-            }
-            .primary-action-btn:hover {
-                opacity: 0.9;
             }
             .metrics-bar {
                 display: grid;
@@ -139,19 +130,33 @@ async def home():
                 margin-bottom: 20px;
                 border: 1px solid var(--border-color);
             }
-            .metric-box span {
+            .metric-box {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            /* سطر منظم يمنع عكس الحروف أو النسب نهائياً */
+            .metric-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 font-size: 13px;
+            }
+            .metric-label {
                 color: var(--text-muted);
-                display: block;
-                margin-bottom: 5px;
+            }
+            .metric-val {
+                color: #fff;
+                font-weight: bold;
+                direction: ltr;
+                unicode-bidi: embed;
             }
             .progress-track {
                 background: #1e293b;
                 height: 8px;
                 border-radius: 4px;
                 overflow: hidden;
-                position: relative;
-                direction: rtl;
+                direction: ltr;
             }
             .progress-fill-human {
                 background: #10b981;
@@ -206,12 +211,6 @@ async def home():
                 border-radius: 6px;
                 font-size: 12px;
                 cursor: pointer;
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .upload-label:hover {
-                background: #334155;
             }
             .copy-btn {
                 background: #1e293b;
@@ -222,9 +221,6 @@ async def home():
                 cursor: pointer;
                 margin-top: 10px;
                 font-size: 13px;
-            }
-            .copy-btn:hover {
-                background: #334155;
             }
             .loading {
                 text-align: center;
@@ -237,7 +233,7 @@ async def home():
             .modal-overlay {
                 position: fixed;
                 top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.7);
+                background: rgba(0,0,0,0.8);
                 display: none;
                 justify-content: center;
                 align-items: center;
@@ -287,7 +283,7 @@ async def home():
                     <span>Pro</span>
                 </div>
                 <div class="top-badges">
-                    <div class="badge">المحاولات: <span id="attemptsCount">3/3</span> متبقية</div>
+                    <div class="badge">المحاولات: <span id="attemptsCount" dir="ltr">3/3</span> متبقية</div>
                     <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية الباقة</button>
                     <div class="badge" style="cursor:pointer;" onclick="alert('سجل المحاولات فارغ حالياً')">📜 السجل</div>
                 </div>
@@ -320,20 +316,26 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
-            <!-- مقاييس النسبة مع تصحيح الاتجاه المعكوس لـ BiDi -->
+            <!-- مقاييس النسبة منظمة بـ Flexbox لمنع أي انعكاس -->
             <div class="metrics-bar">
                 <div class="metric-box">
-                    <span>نسبة الصياغة البشرية النقية: <span dir="ltr">97%</span> <span dir="ltr" style="color:#94a3b8; font-size:11px;">(بعد التعديل)</span></span>
+                    <div class="metric-row">
+                        <span class="metric-label">نسبة الصياغة البشرية النقية:</span>
+                        <span id="humanMetricVal" class="metric-val">97%</span>
+                    </div>
                     <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 97%;"></div></div>
                 </div>
                 <div class="metric-box">
-                    <span>نسبة النمط الآلي: <span dir="ltr">3% (AI Pattern)</span> <span dir="ltr" style="color:#94a3b8; font-size:11px;">(بعد التعديل)</span></span>
+                    <div class="metric-row">
+                        <span class="metric-label">نسبة النمط الآلي (AI Pattern):</span>
+                        <span id="aiMetricVal" class="metric-val">3%</span>
+                    </div>
                     <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 3%;"></div></div>
                 </div>
             </div>
 
             <div class="editors-grid">
-                <!-- Input Box (يمين) -->
+                <!-- Input Box -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص الأصلي أو المستند</span>
@@ -344,16 +346,15 @@ async def home():
                         </div>
                     </div>
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
-                    <div style="font-size: 11px; color: #64748b; margin-top: 10px;">💡 يدعم النصوص المباشرة وملفات النص والكلمات</div>
                 </div>
 
-                <!-- Result Box (يسار) -->
+                <!-- Result Box -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص النهائي</span>
                         <span id="resWordCount" dir="ltr">0 كلمة</span>
                     </div>
-                    <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة كأن أحداً يكتبه أمامك..."></textarea>
+                    <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة..."></textarea>
                     <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
                 </div>
             </div>
@@ -367,14 +368,14 @@ async def home():
                 <div class="pricing-grid">
                     <div class="price-card">
                         <h3 style="color:#94a3b8;">الباقة المجانية</h3>
-                        <p style="font-size:24px; font-weight:bold; color:#fff;">0 ج.م</p>
+                        <p style="font-size:24px; font-weight:bold; color:#fff;" dir="ltr">0 ج.م</p>
                         <p style="font-size:13px; color:#94a3b8;">3 محاولات مجانية يومياً</p>
                         <button style="width:100%; padding:10px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:10px;" onclick="closePricingModal()">باقتك الحالية</button>
                     </div>
                     <div class="price-card pro">
                         <h3 style="color:#8b5cf6;">باقة Pro الاحترافية</h3>
                         <p style="font-size:24px; font-weight:bold; color:#fff;">غير محدودة</p>
-                        <p style="font-size:13px; color:#94a3b8;">محاولات بلا حدود + دعم فني مميز</p>
+                        <p style="font-size:13px; color:#94a3b8;">محاولات بلا حدود + ميزات متقدمة</p>
                         <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم ربط بوابة الدفع الإلكتروني!')">اشترك الآن</button>
                     </div>
                 </div>
@@ -458,6 +459,12 @@ async def home():
                         currentAttempts--;
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+
+                        // تحديث النسب بشكل سليم
+                        document.getElementById('humanMetricVal').innerText = '98% (بعد التعديل)';
+                        document.getElementById('humanBar').style.width = '98%';
+                        document.getElementById('aiMetricVal').innerText = '2% (بعد التعديل)';
+                        document.getElementById('aiBar').style.width = '2%';
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
