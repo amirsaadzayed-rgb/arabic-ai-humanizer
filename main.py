@@ -151,18 +151,21 @@ async def home():
                 border-radius: 4px;
                 overflow: hidden;
                 position: relative;
+                direction: ltr;
             }
             .progress-fill-human {
                 background: #10b981;
                 width: 70%;
                 height: 100%;
                 transition: width 0.5s ease;
+                float: right;
             }
             .progress-fill-ai {
                 background: #ef4444;
                 width: 87%;
                 height: 100%;
                 transition: width 0.5s ease;
+                float: right;
             }
             .editors-grid {
                 display: grid;
@@ -277,12 +280,12 @@ async def home():
 
             <div class="metrics-bar">
                 <div class="metric-box">
-                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 96% (بعد التعديل)</span>
-                    <div class="progress-track"><div id="humanBar" class="progress-fill-human"></div></div>
+                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 95% (بعد التعديل)</span>
+                    <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 95%;"></div></div>
                 </div>
                 <div class="metric-box">
-                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 87% (قبل التعديل)</span>
-                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai"></div></div>
+                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 5% (بعد التعديل)</span>
+                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 5%;"></div></div>
                 </div>
             </div>
 
@@ -314,7 +317,6 @@ async def home():
         </div>
 
         <script>
-            // إدارة المحاولات المجانية
             let maxAttempts = 3;
             let currentAttempts = localStorage.getItem('ai_humanizer_attempts');
             if (currentAttempts === null) {
@@ -385,16 +387,14 @@ async def home():
                         const resWords = data.result.trim().split(/\\s+/).length;
                         document.getElementById('resWordCount').innerText = resWords + ' كلمة';
                         
-                        // خصم محاولة وتحديث العداد
                         currentAttempts--;
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
 
-                        // تحديث مقاييس النسبة بشكل تفاعلي
-                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 98% (بعد التعديل)';
-                        document.getElementById('humanBar').style.width = '98%';
-                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 2% (بعد التعديل)';
-                        document.getElementById('aiBar').style.width = '2%';
+                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 97% (بعد التعديل)';
+                        document.getElementById('humanBar').style.width = '97%';
+                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 3% (بعد التعديل)';
+                        document.getElementById('aiBar').style.width = '3%';
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
@@ -429,7 +429,6 @@ async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس
         "Content-Type": "application/json"
     }
     
-    # تحسين Prompt الصياغة لضمان أقصى درجة من البشرية والقوة
     prompt = f"""أنت خبير محترف ومحرر بارع في صياغة المحتوى العربي بأسلوب بشري طبيعي وعميق جداً. قم بإعادة صياغة النص التالي بالنبرة ({tone}) وبطول ({length})، بحيث يتم إزالة أي بصمة أو نمط آلي (AI Patterns) تماماً، ويبدو النص كأنه كُتب بيد كاتب بشري محترف ومبدع، مع الحفاظ الكامل على المعنى الأصلي والأفكار بدقة تامة:
 
 النص الأصلي المطلوب صياغته:
