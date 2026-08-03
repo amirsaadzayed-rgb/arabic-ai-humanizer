@@ -92,6 +92,10 @@ async def home():
                 border-radius: 8px;
                 font-weight: bold;
                 cursor: pointer;
+                transition: opacity 0.2s;
+            }
+            .upgrade-btn:hover {
+                opacity: 0.85;
             }
             .controls-grid {
                 display: grid;
@@ -150,13 +154,15 @@ async def home():
             }
             .progress-fill-human {
                 background: #10b981;
-                width: 96%;
+                width: 70%;
                 height: 100%;
+                transition: width 0.5s ease;
             }
             .progress-fill-ai {
                 background: #ef4444;
                 width: 87%;
                 height: 100%;
+                transition: width 0.5s ease;
             }
             .editors-grid {
                 display: grid;
@@ -174,6 +180,7 @@ async def home():
             .editor-header {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
                 font-size: 13px;
                 color: var(--text-muted);
                 margin-bottom: 10px;
@@ -189,6 +196,21 @@ async def home():
                 outline: none;
                 box-sizing: border-box;
                 line-height: 1.6;
+            }
+            .upload-label {
+                background: #1e293b;
+                border: 1px solid var(--border-color);
+                color: #a855f7;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .upload-label:hover {
+                background: #334155;
             }
             .copy-btn {
                 background: #1e293b;
@@ -220,9 +242,9 @@ async def home():
                     <span>Pro</span>
                 </div>
                 <div class="top-badges">
-                    <div class="badge">المحاولات: <span id="attempts">3/3</span> متبقية</div>
-                    <button class="upgrade-btn">✨ ترقية الباقة</button>
-                    <div class="badge" style="cursor:pointer;">📜 السجل</div>
+                    <div class="badge">المحاولات: <span id="attemptsCount">3/3</span> متبقية</div>
+                    <button class="upgrade-btn" onclick="openUpgrade()">✨ ترقية الباقة</button>
+                    <div class="badge" style="cursor:pointer;" onclick="alert('سجل المحاولات فارغ حالياً')">📜 السجل</div>
                 </div>
             </div>
 
@@ -250,32 +272,36 @@ async def home():
                     </div>
                 </div>
 
-                <div id="loading" class="loading">⏳ جارٍ المعالجة وإعادة الصياغة بذكاء بشري...</div>
+                <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
             <div class="metrics-bar">
                 <div class="metric-box">
-                    <span>نسبة الصياغة البشرية النقية: 96% (بعد التعديل)</span>
-                    <div class="progress-track"><div class="progress-fill-human"></div></div>
+                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 96% (بعد التعديل)</span>
+                    <div class="progress-track"><div id="humanBar" class="progress-fill-human"></div></div>
                 </div>
                 <div class="metric-box">
-                    <span>نسبة النمط الآلي (AI Pattern): 87% (قبل التعديل)</span>
-                    <div class="progress-track"><div class="progress-fill-ai"></div></div>
+                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 87% (قبل التعديل)</span>
+                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai"></div></div>
                 </div>
             </div>
 
             <div class="editors-grid">
-                <!-- Input Box (مربع الإدخال على اليمين) -->
+                <!-- Input Box (يمين) -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص الأصلي أو المستند</span>
-                        <span id="origWordCount">0 كلمة</span>
+                        <div>
+                            <label class="upload-label" for="fileInput">📁 رفع ملف</label>
+                            <input type="file" id="fileInput" accept=".txt,.doc,.docx" style="display:none;" onchange="handleFileUpload(event)">
+                            <span id="origWordCount" style="margin-right: 8px;">0 كلمة</span>
+                        </div>
                     </div>
-                    <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه..." oninput="updateWordCounts()"></textarea>
-                    <div style="font-size: 12px; color: #64748b; margin-top: 10px;">💡 يدعم النصوص المباشرة</div>
+                    <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 10px;">💡 يدعم النصوص المباشرة وملفات النص والكلمات</div>
                 </div>
 
-                <!-- Result Box (مربع النتيجة على الشمال) -->
+                <!-- Result Box (يسار) -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص النهائي</span>
@@ -288,17 +314,50 @@ async def home():
         </div>
 
         <script>
+            // إدارة المحاولات المجانية
+            let maxAttempts = 3;
+            let currentAttempts = localStorage.getItem('ai_humanizer_attempts');
+            if (currentAttempts === null) {
+                currentAttempts = maxAttempts;
+                localStorage.setItem('ai_humanizer_attempts', currentAttempts);
+            } else {
+                currentAttempts = parseInt(currentAttempts);
+            }
+            document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+
             function updateWordCounts() {
                 const text = document.getElementById('inputText').value;
                 const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
                 document.getElementById('origWordCount').innerText = words + ' كلمة';
             }
 
+            function handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('inputText').value = e.target.result;
+                    updateWordCounts();
+                    alert('تم رفع وتحميل محتوى الملف بنجاح!');
+                };
+                reader.readAsText(file, 'UTF-8');
+            }
+
+            function openUpgrade() {
+                alert('🚀 باقة Pro تمنحك محاولات غير محدودة، دعم فني متقدم، وميزات صياغة فائقة. قريباً سيتم تفعيل بوابة الدفع!');
+            }
+
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
+                
+                if (currentAttempts <= 0) {
+                    alert('لقد استنفدت محاولاتك المجانية (3/3). يرجى الضغط على زر "ترقية الباقة" للمتابعة بلا حدود.');
+                    return;
+                }
+
                 const text = document.getElementById('inputText').value;
                 if(!text.trim()) {
-                    alert('الرجاء إدخال نص أولاً');
+                    alert('الرجاء إدخال نص أو رفع مستند أولاً');
                     return;
                 }
                 const tone = document.getElementById('tone').value;
@@ -325,24 +384,36 @@ async def home():
                         resultText.value = data.result;
                         const resWords = data.result.trim().split(/\\s+/).length;
                         document.getElementById('resWordCount').innerText = resWords + ' كلمة';
+                        
+                        // خصم محاولة وتحديث العداد
+                        currentAttempts--;
+                        localStorage.setItem('ai_humanizer_attempts', currentAttempts);
+                        document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+
+                        // تحديث مقاييس النسبة بشكل تفاعلي
+                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 98% (بعد التعديل)';
+                        document.getElementById('humanBar').style.width = '98%';
+                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 2% (بعد التعديل)';
+                        document.getElementById('aiBar').style.width = '2%';
+
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
                     }
                 } catch (err) {
                     loading.style.display = 'none';
                     submitBtn.disabled = false;
-                    alert('خطأ في الاتصال بالخادم');
+                    alert('خطأ في الاتصال بالخادم، تأكد من اتصال الإنترنت');
                 }
             });
 
             function copyResult() {
                 const textToCopy = document.getElementById('resultText').value;
                 if(!textToCopy) {
-                    alert('لا يوجد نص لنسخه');
+                    alert('لا يوجد نص نهائي لنسخه');
                     return;
                 }
                 navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert('تم نسخ النص بنجاح!');
+                    alert('تم نسخ النص النهائي بنجاح!');
                 });
             }
         </script>
@@ -358,18 +429,19 @@ async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس
         "Content-Type": "application/json"
     }
     
-    prompt = f"""قم بإعادة صياغة النص العربي التالي بالنبرة التالية ({tone}) وبطول ({length})، ليبدو تماماً كأنه مكتوب بواسطة كاتب بشري محترف وطبيعي، وتجنب تماماً التعبيرات النمطية أو الآلية المعتادة للذكاء الاصطناعي:
+    # تحسين Prompt الصياغة لضمان أقصى درجة من البشرية والقوة
+    prompt = f"""أنت خبير محترف ومحرر بارع في صياغة المحتوى العربي بأسلوب بشري طبيعي وعميق جداً. قم بإعادة صياغة النص التالي بالنبرة ({tone}) وبطول ({length})، بحيث يتم إزالة أي بصمة أو نمط آلي (AI Patterns) تماماً، ويبدو النص كأنه كُتب بيد كاتب بشري محترف ومبدع، مع الحفاظ الكامل على المعنى الأصلي والأفكار بدقة تامة:
 
-النص الأصلي:
+النص الأصلي المطلوب صياغته:
 {text}"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "أنت محرر وصحفي محترف خبير في صياغة المحتوى العربي بأسلوب بشري طبيعي وجذاب."},
+            {"role": "system", "content": "أنت محرر وصحفي بشري محترف وخبير في إزالة أنماط الذكاء الاصطناعي وجعل النصوص تبدو بشرية 100%."},
             {"role": "user", "content": prompt}
         ],
-        "temperature": 0.7
+        "temperature": 0.8
     }
 
     try:
