@@ -151,21 +151,19 @@ async def home():
                 border-radius: 4px;
                 overflow: hidden;
                 position: relative;
-                direction: ltr;
+                direction: rtl; /* ضمان بدء الامتلاء من اليمين لليسار بشكل صحيح تماماً */
             }
             .progress-fill-human {
                 background: #10b981;
-                width: 70%;
+                width: 97%;
                 height: 100%;
                 transition: width 0.5s ease;
-                float: right;
             }
             .progress-fill-ai {
                 background: #ef4444;
-                width: 87%;
+                width: 3%;
                 height: 100%;
                 transition: width 0.5s ease;
-                float: right;
             }
             .editors-grid {
                 display: grid;
@@ -280,12 +278,12 @@ async def home():
 
             <div class="metrics-bar">
                 <div class="metric-box">
-                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 95% (بعد التعديل)</span>
-                    <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 95%;"></div></div>
+                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 97% (بعد التعديل)</span>
+                    <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 97%;"></div></div>
                 </div>
                 <div class="metric-box">
-                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 5% (بعد التعديل)</span>
-                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 5%;"></div></div>
+                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 3% (بعد التعديل)</span>
+                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 3%;"></div></div>
                 </div>
             </div>
 
@@ -391,10 +389,10 @@ async def home():
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
 
-                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 97% (بعد التعديل)';
-                        document.getElementById('humanBar').style.width = '97%';
-                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 3% (بعد التعديل)';
-                        document.getElementById('aiBar').style.width = '3%';
+                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 98% (بعد التعديل)';
+                        document.getElementById('humanBar').style.width = '98%';
+                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 2% (بعد التعديل)';
+                        document.getElementById('aiBar').style.width = '2%';
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
