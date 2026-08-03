@@ -477,7 +477,7 @@ async def home():
 
         <script>
             // ضع بريدك الحقيقي بدلاً من your-email@gmail.com
-            const ADMIN_EMAIL = "your-email@gmail.com"; 
+            const ADMIN_EMAIL = "amirsaadzayed@gmail.com"; 
 
             let currentUser = localStorage.getItem('ai_user_email') || '';
             let maxAttempts = 3;
