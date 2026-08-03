@@ -120,8 +120,9 @@ async def home():
                 font-weight: bold;
                 cursor: pointer;
             }
+            /* شريط النسب مخفي افتراضياً ولا يظهر إلا بعد المعالجة */
             .metrics-bar {
-                display: grid;
+                display: none;
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
                 background: #0f172a;
@@ -135,7 +136,6 @@ async def home():
                 flex-direction: column;
                 gap: 8px;
             }
-            /* سطر منظم يمنع عكس الحروف أو النسب نهائياً */
             .metric-row {
                 display: flex;
                 justify-content: space-between;
@@ -160,13 +160,13 @@ async def home():
             }
             .progress-fill-human {
                 background: #10b981;
-                width: 97%;
+                width: 0%;
                 height: 100%;
                 transition: width 0.5s ease;
             }
             .progress-fill-ai {
                 background: #ef4444;
-                width: 3%;
+                width: 0%;
                 height: 100%;
                 transition: width 0.5s ease;
             }
@@ -229,7 +229,7 @@ async def home():
                 margin: 10px 0;
                 display: none;
             }
-            /* Modal Styles */
+            /* Modals */
             .modal-overlay {
                 position: fixed;
                 top: 0; left: 0; width: 100%; height: 100%;
@@ -245,21 +245,26 @@ async def home():
                 padding: 30px;
                 border-radius: 16px;
                 width: 100%;
-                max-width: 600px;
+                max-width: 750px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+                max-height: 80vh;
+                overflow-y: auto;
             }
             .pricing-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 15px;
                 margin-top: 20px;
             }
             .price-card {
                 background: #0f172a;
                 border: 1px solid var(--border-color);
                 border-radius: 12px;
-                padding: 20px;
+                padding: 15px;
                 text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
             }
             .price-card.pro {
                 border-color: #8b5cf6;
@@ -273,6 +278,14 @@ async def home():
                 cursor: pointer;
                 float: left;
             }
+            .history-item {
+                background: #0f172a;
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                font-size: 13px;
+            }
         </style>
     </head>
     <body>
@@ -285,7 +298,7 @@ async def home():
                 <div class="top-badges">
                     <div class="badge">المحاولات: <span id="attemptsCount" dir="ltr">3/3</span> متبقية</div>
                     <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية الباقة</button>
-                    <div class="badge" style="cursor:pointer;" onclick="alert('سجل المحاولات فارغ حالياً')">📜 السجل</div>
+                    <div class="badge" style="cursor:pointer;" onclick="openHistoryModal()">📜 السجل</div>
                 </div>
             </div>
 
@@ -316,29 +329,31 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
-            <!-- مقاييس النسبة منظمة بـ Flexbox لمنع أي انعكاس -->
-            <div class="metrics-bar">
-                <div class="metric-box">
-                    <div class="metric-row">
-                        <span class="metric-label">نسبة الصياغة البشرية النقية:</span>
-                        <span id="humanMetricVal" class="metric-val">97%</span>
-                    </div>
-                    <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 97%;"></div></div>
-                </div>
+            <!-- شريط النسب (يظهر فقط بعد اكتمال التحويل) -->
+            <div id="metricsBar" class="metrics-bar">
+                <!-- اليمين: النمط الآلي -->
                 <div class="metric-box">
                     <div class="metric-row">
                         <span class="metric-label">نسبة النمط الآلي (AI Pattern):</span>
-                        <span id="aiMetricVal" class="metric-val">3%</span>
+                        <span id="aiMetricVal" class="metric-val">2%</span>
                     </div>
-                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 3%;"></div></div>
+                    <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 2%;"></div></div>
+                </div>
+                <!-- اليسار: الصياغة البشرية -->
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <span class="metric-label">نسبة الصياغة البشرية النقية:</span>
+                        <span id="humanMetricVal" class="metric-val">98%</span>
+                    </div>
+                    <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 98%;"></div></div>
                 </div>
             </div>
 
             <div class="editors-grid">
-                <!-- Input Box -->
+                <!-- اليمين: النص الأصلي / الآلي -->
                 <div class="editor-card">
                     <div class="editor-header">
-                        <span>النص الأصلي أو المستند</span>
+                        <span>النص الأصلي (الذكاء الاصطناعي)</span>
                         <div>
                             <label class="upload-label" for="fileInput">📁 رفع ملف</label>
                             <input type="file" id="fileInput" accept=".txt,.doc,.docx" style="display:none;" onchange="handleFileUpload(event)">
@@ -348,10 +363,10 @@ async def home():
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
                 </div>
 
-                <!-- Result Box -->
+                <!-- اليسار: النص المولد بشرياً -->
                 <div class="editor-card">
                     <div class="editor-header">
-                        <span>النص النهائي</span>
+                        <span>النص المولد بشرياً (الناتج النهائي)</span>
                         <span id="resWordCount" dir="ltr">0 كلمة</span>
                     </div>
                     <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة..."></textarea>
@@ -360,24 +375,50 @@ async def home():
             </div>
         </div>
 
-        <!-- Pricing Modal -->
+        <!-- Pricing Modal (3 باقات) -->
         <div id="pricingModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
                 <h2 style="margin-top:0; color:#fff; text-align:center;">اختر الباقة المناسبة لك</h2>
                 <div class="pricing-grid">
+                    <!-- باقة 1: المجانية -->
                     <div class="price-card">
-                        <h3 style="color:#94a3b8;">الباقة المجانية</h3>
-                        <p style="font-size:24px; font-weight:bold; color:#fff;" dir="ltr">0 ج.م</p>
-                        <p style="font-size:13px; color:#94a3b8;">3 محاولات مجانية يومياً</p>
+                        <div>
+                            <h3 style="color:#94a3b8; margin-top:0;">الباقة المجانية</h3>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">0 ج.م</p>
+                            <p style="font-size:12px; color:#94a3b8;">3 محاولات مجانية يومياً للاستجابة السريعة</p>
+                        </div>
                         <button style="width:100%; padding:10px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:10px;" onclick="closePricingModal()">باقتك الحالية</button>
                     </div>
-                    <div class="price-card pro">
-                        <h3 style="color:#8b5cf6;">باقة Pro الاحترافية</h3>
-                        <p style="font-size:24px; font-weight:bold; color:#fff;">غير محدودة</p>
-                        <p style="font-size:13px; color:#94a3b8;">محاولات بلا حدود + ميزات متقدمة</p>
-                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم ربط بوابة الدفع الإلكتروني!')">اشترك الآن</button>
+                    <!-- باقة 2: المحددة بعدد مقالات -->
+                    <div class="price-card">
+                        <div>
+                            <h3 style="color:#38bdf8; margin-top:0;">الباقة المحددة</h3>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">150 ج.م</p>
+                            <p style="font-size:12px; color:#94a3b8;">مخصصة لعدد 50 مقال شهرياً بدعم كامل</p>
+                        </div>
+                        <button style="width:100%; padding:10px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لهذه الباقة!')">اشترك الآن</button>
                     </div>
+                    <!-- باقة 3: Pro اللامحدودة -->
+                    <div class="price-card pro">
+                        <div>
+                            <h3 style="color:#8b5cf6; margin-top:0;">باقة Pro</h3>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">350 ج.م</p>
+                            <p style="font-size:12px; color:#94a3b8;">مقاولات ومحاولات غير محدودة بالكامل + دعم فني خاص</p>
+                        </div>
+                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لباقة Pro!')">اشترك الآن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div id="historyModal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeHistoryModal()">إغلاق</button>
+                <h2 style="margin-top:0; color:#fff;">سجل المحاولات السابقة</h2>
+                <div id="historyContainer" style="margin-top: 15px;">
+                    <!-- سيتم تعبئته ديناميكياً -->
                 </div>
             </div>
         </div>
@@ -398,6 +439,28 @@ async def home():
             }
             function closePricingModal() {
                 document.getElementById('pricingModal').style.display = 'none';
+            }
+
+            function openHistoryModal() {
+                const container = document.getElementById('historyContainer');
+                let history = JSON.parse(localStorage.getItem('ai_humanizer_history') || '[]');
+                if (history.length === 0) {
+                    container.innerHTML = '<p style="color: #94a3b8; text-align: center;">لا توجد محاولات مسجلة حتى الآن.</p>';
+                } else {
+                    container.innerHTML = history.map((item, index) => `
+                        <div class="history-item">
+                            <div style="display: flex; justify-content: space-between; color: #8b5cf6; margin-bottom: 5px;">
+                                <span>محاولة رقم #${index + 1} (${item.tone})</span>
+                                <span dir="ltr">${item.date}</span>
+                            </div>
+                            <div style="color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">الناتج: ${item.result}</div>
+                        </div>
+                    `).join('');
+                }
+                document.getElementById('historyModal').style.display = 'flex';
+            }
+            function closeHistoryModal() {
+                document.getElementById('historyModal').style.display = 'none';
             }
 
             function updateWordCounts() {
@@ -460,11 +523,21 @@ async def home():
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
 
-                        // تحديث النسب بشكل سليم
-                        document.getElementById('humanMetricVal').innerText = '98% (بعد التعديل)';
-                        document.getElementById('humanBar').style.width = '98%';
-                        document.getElementById('aiMetricVal').innerText = '2% (بعد التعديل)';
+                        // إظهار شريط النسب وتحديثه بعد المعالجة الفعلية فقط
+                        document.getElementById('metricsBar').style.display = 'grid';
+                        document.getElementById('aiMetricVal').innerText = '2%';
                         document.getElementById('aiBar').style.width = '2%';
+                        document.getElementById('humanMetricVal').innerText = '98%';
+                        document.getElementById('humanBar').style.width = '98%';
+
+                        // حفظ المحاولة في السجل
+                        let history = JSON.parse(localStorage.getItem('ai_humanizer_history') || '[]');
+                        history.unshift({
+                            tone: tone,
+                            date: new Date().toLocaleString(),
+                            result: data.result.substring(0, 100) + '...'
+                        });
+                        localStorage.setItem('ai_humanizer_history', JSON.stringify(history));
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
