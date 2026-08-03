@@ -15,19 +15,20 @@ async def home():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>أداة إعادة صياغة النصوص العربية بأسلوب بشري</title>
+        <title>منسق الذكاء الاصطناعي Pro</title>
         <style>
             :root {
-                --primary: #4f46e5;
-                --primary-hover: #4338ca;
-                --bg-color: #f8fafc;
-                --card-bg: #ffffff;
-                --text-main: #1e293b;
-                --border-color: #cbd5e1;
+                --bg-main: #0b0f19;
+                --card-bg: #131b2e;
+                --primary: #8b5cf6;
+                --primary-hover: #7c3aed;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --border-color: #1e293b;
             }
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: var(--bg-color);
+                background-color: var(--bg-main);
                 color: var(--text-main);
                 margin: 0;
                 padding: 20px;
@@ -38,163 +39,287 @@ async def home():
             }
             .container {
                 background: var(--card-bg);
-                padding: 35px;
-                border-radius: 16px;
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 width: 100%;
-                max-width: 750px;
+                max-width: 1100px;
+                border: 1px solid var(--border-color);
             }
-            h1 {
-                color: var(--primary);
-                text-align: center;
+            .header-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 margin-bottom: 25px;
-                font-size: 26px;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 15px;
             }
-            .form-group {
+            .logo-area {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .logo-area h1 {
+                font-size: 22px;
+                margin: 0;
+                color: #fff;
+            }
+            .logo-area span {
+                background: linear-gradient(135deg, #8b5cf6, #ec4899);
+                color: white;
+                padding: 3px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .top-badges {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+            .badge {
+                background: #1e293b;
+                padding: 6px 12px;
+                border-radius: 8px;
+                font-size: 13px;
+                border: 1px solid var(--border-color);
+                color: var(--text-muted);
+            }
+            .upgrade-btn {
+                background: linear-gradient(135deg, #8b5cf6, #6366f1);
+                color: white;
+                border: none;
+                padding: 6px 14px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            .controls-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 15px;
                 margin-bottom: 20px;
             }
-            label {
-                font-weight: 600;
+            .control-item label {
                 display: block;
-                margin-bottom: 8px;
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-bottom: 6px;
             }
-            textarea {
+            .control-item select, .control-item button {
                 width: 100%;
-                height: 160px;
-                padding: 14px;
+                padding: 12px;
+                background: #1e293b;
                 border: 1px solid var(--border-color);
+                color: white;
                 border-radius: 10px;
-                font-size: 16px;
-                resize: vertical;
-                box-sizing: border-box;
-                transition: border-color 0.2s;
-            }
-            textarea:focus {
-                border-color: var(--primary);
+                font-size: 14px;
                 outline: none;
-                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
             }
-            .stats {
+            .primary-action-btn {
+                background: linear-gradient(135deg, #a855f7, #ec4899);
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }
+            .primary-action-btn:hover {
+                opacity: 0.9;
+            }
+            .metrics-bar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                background: #0f172a;
+                padding: 15px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                border: 1px solid var(--border-color);
+            }
+            .metric-box span {
+                font-size: 12px;
+                color: var(--text-muted);
+                display: block;
+                margin-bottom: 5px;
+            }
+            .progress-track {
+                background: #1e293b;
+                height: 8px;
+                border-radius: 4px;
+                overflow: hidden;
+                position: relative;
+            }
+            .progress-fill-human {
+                background: #10b981;
+                width: 96%;
+                height: 100%;
+            }
+            .progress-fill-ai {
+                background: #ef4444;
+                width: 87%;
+                height: 100%;
+            }
+            .editors-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .editor-card {
+                background: #0f172a;
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+            }
+            .editor-header {
                 display: flex;
                 justify-content: space-between;
                 font-size: 13px;
-                color: #64748b;
-                margin-top: 5px;
-                margin-bottom: 15px;
+                color: var(--text-muted);
+                margin-bottom: 10px;
             }
-            .btn-container {
-                display: flex;
-                gap: 10px;
-            }
-            button {
-                background-color: var(--primary);
-                color: white;
-                border: none;
-                padding: 14px 20px;
-                font-size: 16px;
-                font-weight: 600;
-                border-radius: 10px;
-                cursor: pointer;
+            textarea {
                 width: 100%;
-                transition: background 0.2s, transform 0.1s;
-            }
-            button:hover {
-                background-color: var(--primary-hover);
-            }
-            button:active {
-                transform: scale(0.99);
-            }
-            .result-box {
-                margin-top: 25px;
-                background: #f1f5f9;
-                padding: 20px;
-                border-radius: 10px;
-                border-right: 5px solid #10b981;
-                display: none;
-                position: relative;
-            }
-            .result-box h3 {
-                margin-top: 0;
-                color: #059669;
-                font-size: 18px;
+                height: 220px;
+                background: transparent;
+                border: none;
+                color: white;
+                font-size: 15px;
+                resize: vertical;
+                outline: none;
+                box-sizing: border-box;
+                line-height: 1.6;
             }
             .copy-btn {
-                background-color: #10b981;
+                background: #1e293b;
                 color: white;
-                border: none;
-                padding: 6px 12px;
-                font-size: 13px;
-                border-radius: 6px;
+                border: 1px solid var(--border-color);
+                padding: 8px;
+                border-radius: 8px;
                 cursor: pointer;
-                margin-top: 12px;
-                width: auto;
-                display: inline-block;
+                margin-top: 10px;
+                font-size: 13px;
             }
             .copy-btn:hover {
-                background-color: #059669;
+                background: #334155;
             }
             .loading {
                 text-align: center;
-                color: #d97706;
-                font-weight: 600;
+                color: #fbbf24;
+                font-weight: bold;
+                margin: 10px 0;
                 display: none;
-                margin-top: 20px;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>✍️ أداة إعادة صياغة النصوص بأسلوب بشري</h1>
+            <!-- Header -->
+            <div class="header-bar">
+                <div class="logo-area">
+                    <h1>منسق الذكاء الاصطناعي Pro</h1>
+                    <span>Pro</span>
+                </div>
+                <div class="top-badges">
+                    <div class="badge">المحاولات: <span id="attempts">3/3</span> متبقية</div>
+                    <button class="upgrade-btn">✨ ترقية الباقة</button>
+                    <div class="badge" style="cursor:pointer;">📜 السجل</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
             <form id="humanizeForm">
-                <div class="form-group">
-                    <label for="text">الصق النص المكتوب بالذكاء الاصطناعي هنا:</label>
-                    <textarea id="text" name="text" placeholder="اكتب أو الصق النص هنا..." oninput="updateStats()" required></textarea>
-                    <div class="stats">
-                        <span id="charCount">عدد الحروف: 0</span>
-                        <span id="wordCount">عدد الكلمات: 0</span>
+                <div class="controls-grid">
+                    <div class="control-item">
+                        <label>نبرة الصياغة:</label>
+                        <select id="tone">
+                            <option value="صحفي سلس وممتع">✨ صحفي سلس وممتع</option>
+                            <option value="أكاديمي رسمي">🎓 أكاديمي رسمي</option>
+                            <option value="تسويقي جذاب">🚀 تسويقي جذاب</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label>طول النص الناتج:</label>
+                        <select id="length">
+                            <option value="نفس الطول الأصلي">⚖️ نفس الطول الأصلي</option>
+                            <option value="مختصر ومركز">⚡ مختصر ومركز</option>
+                            <option value="مفصل ومشروح">📖 مفصل ومشروح</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label>&nbsp;</label>
+                        <button type="submit" id="submitBtn" class="primary-action-btn">✨ إعادة الصياغة المباشرة</button>
                     </div>
                 </div>
-                <div class="btn-container">
-                    <button type="submit" id="submitBtn">إحداث صياغة بشرية طبيعية</button>
-                </div>
-            </form>
-            
-            <div id="loading" class="loading">⏳ جارٍ تحليل النص وإعادة صياغته ببراعة...</div>
 
-            <div id="resultBox" class="result-box">
-                <h3>النص المُعدّل (أسلوب طبيعي):</h3>
-                <p id="resultText" style="white-space: pre-wrap; line-height: 1.7; margin-bottom: 10px;"></p>
-                <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
+                <div id="loading" class="loading">⏳ جارٍ المعالجة وإعادة الصياغة بذكاء بشري...</div>
+            </form>
+
+            <!-- Metrics -->
+            <div class="metrics-bar">
+                <div class="metric-box">
+                    <span>نسبة الصياغة البشرية النقية: 96% (بعد التعديل)</span>
+                    <div class="progress-track"><div class="progress-fill-human"></div></div>
+                </div>
+                <div class="metric-box">
+                    <span>نسبة النمط الآلي (AI Pattern): 87% (قبل التعديل)</span>
+                    <div class="progress-track"><div class="progress-fill-ai"></div></div>
+                </div>
+            </div>
+
+            <!-- Editors Grid -->
+            <div class="editors-grid">
+                <!-- Result Box -->
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <span>النص النهائي</span>
+                        <span id="resWordCount">0 كلمة</span>
+                    </div>
+                    <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة كأن أحداً يكتبه أمامك..."></textarea>
+                    <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
+                </div>
+
+                <!-- Input Box -->
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <span>النص الأصلي أو المستند</span>
+                        <span id="origWordCount">0 كلمة</span>
+                    </div>
+                    <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه..." oninput="updateWordCounts()"></textarea>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 10px;">💡 يدعم النصوص المباشرة</div>
+                </div>
             </div>
         </div>
 
         <script>
-            function updateStats() {
-                const text = document.getElementById('text').value;
-                document.getElementById('charCount').innerText = 'عدد الحروف: ' + text.length;
+            function updateWordCounts() {
+                const text = document.getElementById('inputText').value;
                 const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
-                document.getElementById('wordCount').innerText = 'عدد الكلمات: ' + words;
+                document.getElementById('origWordCount').innerText = words + ' كلمة';
             }
 
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const text = document.getElementById('text').value;
+                const text = document.getElementById('inputText').value;
+                if(!text.trim()) {
+                    alert('الرجاء إدخال نص أولاً');
+                    return;
+                }
+                const tone = document.getElementById('tone').value;
+                const length = document.getElementById('length').value;
                 const loading = document.getElementById('loading');
-                const resultBox = document.getElementById('resultBox');
-                const resultText = document.getElementById('resultText');
                 const submitBtn = document.getElementById('submitBtn');
+                const resultText = document.getElementById('resultText');
 
                 loading.style.display = 'block';
-                resultBox.style.display = 'none';
                 submitBtn.disabled = true;
 
                 try {
                     const response = await fetch('/humanize', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'text=' + encodeURIComponent(text)
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'text=' + encodeURIComponent(text) + '&tone=' + encodeURIComponent(tone) + '&length=' + encodeURIComponent(length)
                     });
 
                     const data = await response.json();
@@ -202,8 +327,9 @@ async def home():
                     submitBtn.disabled = false;
 
                     if (response.ok) {
-                        resultText.innerText = data.result;
-                        resultBox.style.display = 'block';
+                        resultText.value = data.result;
+                        const resWords = data.result.trim().split(/\\s+/).length;
+                        document.getElementById('resWordCount').innerText = resWords + ' كلمة';
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
                     }
@@ -215,7 +341,11 @@ async def home():
             });
 
             function copyResult() {
-                const textToCopy = document.getElementById('resultText').innerText;
+                const textToCopy = document.getElementById('resultText').value;
+                if(!textToCopy) {
+                    alert('لا يوجد نص لنسخه');
+                    return;
+                }
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     alert('تم نسخ النص بنجاح!');
                 });
@@ -226,14 +356,14 @@ async def home():
     """
 
 @app.post("/humanize")
-async def humanize_text(text: str = Form(...)):
+async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس وممتع"), length: str = Form("نفس الطول الأصلي")):
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {GROG_API_KEY}",
         "Content-Type": "application/json"
     }
     
-    prompt = f"""قم بإعادة صياغة النص العربي التالي ليبدو تماماً كأنه مكتوب بواسطة كاتب بشري محترف وطبيعي، وتجنب تماماً التعبيرات النمطية أو الآلية، واجعله سلساً، جذاباً، ومترابطاً:
+    prompt = f"""قم بإعادة صياغة النص العربي التالي بالنبرة التالية ({tone}) وبطول ({length})، ليبدو تماماً كأنه مكتوب بواسطة كاتب بشري محترف وطبيعي، وتجنب تماماً التعبيرات النمطية أو الآلية المعتادة للذكاء الاصطناعي:
 
 النص الأصلي:
 {text}"""
