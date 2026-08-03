@@ -476,7 +476,7 @@ async def home():
         </div>
 
         <script>
-            // البريد الخاص بك كمدير (يمكنك تغليفه ببريدك الشخصي لفتح محاولات غير محدودة ∞ تلقائياً)
+            // ضع بريدك الحقيقي بدلاً من your-email@gmail.com
             const ADMIN_EMAIL = "your-email@gmail.com"; 
 
             let currentUser = localStorage.getItem('ai_user_email') || '';
@@ -491,15 +491,13 @@ async def home():
                     return;
                 }
 
-                // لو أنت المدير، محاولاتك غير محدودة دائماً
                 if (currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('attemptsCount').innerText = '∞ (مدير)';
                     document.getElementById('loginBtnText').innerText = '👑 ' + currentUser.split('@')[0];
-                    currentAttempts = 999999; // بلا حدود
+                    currentAttempts = 999999;
                     return;
                 }
 
-                // حسابات المستخدمين العاديين
                 document.getElementById('loginBtnText').innerText = '👤 ' + currentUser.split('@')[0];
                 let savedAttempts = localStorage.getItem('attempts_' + currentUser);
                 if (savedAttempts === null) {
@@ -594,14 +592,12 @@ async def home():
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // لو لم يسجل دخول، نطلب منه تسجيل الدخول أولاً لتثبيت حسابه
                 if (!currentUser) {
                     openLoginModal();
                     alert('الرجاء تسجيل الدخول ببريدك الإلكتروني أولاً لبدء استخدام المحاولات المجانية');
                     return;
                 }
 
-                // فحص المحاولات (باستثناء حساب المدير الخاص بك)
                 if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && currentAttempts <= 0) {
                     openPricingModal();
                     return;
@@ -637,7 +633,6 @@ async def home():
                         const resWords = data.result.trim().split(/\\s+/).length;
                         document.getElementById('resWordCount').innerText = resWords + ' كلمة';
                         
-                        // خصم المحاولة إذا لم يكن حساب المدير
                         if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                             currentAttempts--;
                             localStorage.setItem('attempts_' + currentUser, currentAttempts);
@@ -667,7 +662,7 @@ async def home():
                     }
                 } catch (err) {
                     loading.style.display = 'none';
-                    submitBtn.disabled, (submitBtn.disabled = false);
+                    submitBtn.disabled = false;
                     alert('خطأ في الاتصال بالخادم، تأكد من اتصال الإنترنت');
                 }
             });
