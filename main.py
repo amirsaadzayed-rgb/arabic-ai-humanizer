@@ -29,28 +29,32 @@ async def home():
                 background-color: var(--bg-main);
                 color: var(--text-main);
                 margin: 0;
-                padding: 20px;
+                padding: 15px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
+                box-sizing: border-box;
             }
             .container {
                 background: var(--card-bg);
-                padding: 30px;
+                padding: 20px 25px;
                 border-radius: 20px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 width: 100%;
                 max-width: 1100px;
                 border: 1px solid var(--border-color);
+                box-sizing: border-box;
             }
             .header-bar {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 25px;
+                margin-bottom: 20px;
                 border-bottom: 1px solid var(--border-color);
                 padding-bottom: 15px;
+                flex-wrap: wrap;
+                gap: 15px;
             }
             .logo-area {
                 display: flex;
@@ -58,7 +62,7 @@ async def home():
                 gap: 10px;
             }
             .logo-area h1 {
-                font-size: 22px;
+                font-size: 20px;
                 margin: 0;
                 color: #fff;
             }
@@ -67,19 +71,20 @@ async def home():
                 color: white;
                 padding: 3px 10px;
                 border-radius: 20px;
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: bold;
             }
             .top-badges {
                 display: flex;
-                gap: 10px;
+                gap: 8px;
                 align-items: center;
+                flex-wrap: wrap;
             }
             .badge {
                 background: #1e293b;
                 padding: 6px 12px;
                 border-radius: 8px;
-                font-size: 13px;
+                font-size: 12px;
                 border: 1px solid var(--border-color);
                 color: var(--text-muted);
             }
@@ -113,6 +118,7 @@ async def home():
                 border-radius: 10px;
                 font-size: 14px;
                 outline: none;
+                box-sizing: border-box;
             }
             .primary-action-btn {
                 background: linear-gradient(135deg, #a855f7, #ec4899);
@@ -120,7 +126,6 @@ async def home():
                 font-weight: bold;
                 cursor: pointer;
             }
-            /* شريط النسب مخفي افتراضياً ولا يظهر إلا بعد المعالجة */
             .metrics-bar {
                 display: none;
                 grid-template-columns: 1fr 1fr;
@@ -238,17 +243,20 @@ async def home():
                 justify-content: center;
                 align-items: center;
                 z-index: 1000;
+                padding: 15px;
+                box-sizing: border-box;
             }
             .modal-content {
                 background: #131b2e;
                 border: 1px solid var(--border-color);
-                padding: 30px;
+                padding: 25px;
                 border-radius: 16px;
                 width: 100%;
-                max-width: 750px;
+                max-width: 800px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-                max-height: 80vh;
+                max-height: 85vh;
                 overflow-y: auto;
+                box-sizing: border-box;
             }
             .pricing-grid {
                 display: grid;
@@ -285,6 +293,29 @@ async def home():
                 margin-bottom: 10px;
                 border: 1px solid var(--border-color);
                 font-size: 13px;
+            }
+
+            /* Responsive Media Queries for Mobile & Tablets */
+            @media (max-width: 900px) {
+                .controls-grid {
+                    grid-template-columns: 1fr;
+                }
+                .editors-grid {
+                    grid-template-columns: 1fr;
+                }
+                .metrics-bar {
+                    grid-template-columns: 1fr;
+                }
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                }
+                .header-bar {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .top-badges {
+                    justify-content: space-between;
+                }
             }
         </style>
     </head>
@@ -329,7 +360,7 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
-            <!-- شريط النسب (يظهر فقط بعد اكتمال التحويل) -->
+            <!-- شريط النسب (يظهر بعد اكتمال التحويل) -->
             <div id="metricsBar" class="metrics-bar">
                 <!-- اليمين: النمط الآلي -->
                 <div class="metric-box">
@@ -350,7 +381,7 @@ async def home():
             </div>
 
             <div class="editors-grid">
-                <!-- اليمين: النص الأصلي / الآلي -->
+                <!-- اليمين: النص الأصلي (الذكاء الاصطناعي) -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص الأصلي (الذكاء الاصطناعي)</span>
@@ -363,7 +394,7 @@ async def home():
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
                 </div>
 
-                <!-- اليسار: النص المولد بشرياً -->
+                <!-- اليسار: النص المولد بشرياً (الناتج النهائي) -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص المولد بشرياً (الناتج النهائي)</span>
@@ -375,7 +406,7 @@ async def home():
             </div>
         </div>
 
-        <!-- Pricing Modal (3 باقات) -->
+        <!-- Pricing Modal (3 باقات بالدولار) -->
         <div id="pricingModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
@@ -385,7 +416,7 @@ async def home():
                     <div class="price-card">
                         <div>
                             <h3 style="color:#94a3b8; margin-top:0;">الباقة المجانية</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">0 ج.م</p>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
                             <p style="font-size:12px; color:#94a3b8;">3 محاولات مجانية يومياً للاستجابة السريعة</p>
                         </div>
                         <button style="width:100%; padding:10px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:10px;" onclick="closePricingModal()">باقتك الحالية</button>
@@ -394,19 +425,19 @@ async def home():
                     <div class="price-card">
                         <div>
                             <h3 style="color:#38bdf8; margin-top:0;">الباقة المحددة</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">150 ج.م</p>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$10 / mo</p>
                             <p style="font-size:12px; color:#94a3b8;">مخصصة لعدد 50 مقال شهرياً بدعم كامل</p>
                         </div>
-                        <button style="width:100%; padding:10px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لهذه الباقة!')">اشترك الآن</button>
+                        <button style="width:100%; padding:10px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لهذه الباقة بالدولار!')">اشترك الآن</button>
                     </div>
                     <!-- باقة 3: Pro اللامحدودة -->
                     <div class="price-card pro">
                         <div>
                             <h3 style="color:#8b5cf6; margin-top:0;">باقة Pro</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">350 ج.م</p>
-                            <p style="font-size:12px; color:#94a3b8;">مقاولات ومحاولات غير محدودة بالكامل + دعم فني خاص</p>
+                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$25 / mo</p>
+                            <p style="font-size:12px; color:#94a3b8;">محاولات غير محدودة بالكامل + دعم فني خاص</p>
                         </div>
-                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لباقة Pro!')">اشترك الآن</button>
+                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع لباقة Pro بالدولار!')">اشترك الآن</button>
                     </div>
                 </div>
             </div>
@@ -449,7 +480,7 @@ async def home():
                 } else {
                     container.innerHTML = history.map((item, index) => `
                         <div class="history-item">
-                            <div style="display: flex; justify-content: space-between; color: #8b5cf6; margin-bottom: 5px;">
+                            <div style="display: flex; justify-content: space-between; color: #8b5cf6; margin-bottom: 5px; flex-wrap: wrap;">
                                 <span>محاولة رقم #${index + 1} (${item.tone})</span>
                                 <span dir="ltr">${item.date}</span>
                             </div>
