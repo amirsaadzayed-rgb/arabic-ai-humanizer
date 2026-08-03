@@ -4,7 +4,6 @@ import requests
 
 app = FastAPI()
 
-# مفتاح الاتصال المباشر لضمان استقرار العمل على السيرفر
 GROG_API_KEY = "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"
 
 @app.get("/", response_class=HTMLResponse)
@@ -215,7 +214,6 @@ async def home():
     </head>
     <body>
         <div class="container">
-            <!-- Header -->
             <div class="header-bar">
                 <div class="logo-area">
                     <h1>منسق الذكاء الاصطناعي Pro</h1>
@@ -228,7 +226,6 @@ async def home():
                 </div>
             </div>
 
-            <!-- Controls -->
             <form id="humanizeForm">
                 <div class="controls-grid">
                     <div class="control-item">
@@ -256,7 +253,6 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإعادة الصياغة بذكاء بشري...</div>
             </form>
 
-            <!-- Metrics -->
             <div class="metrics-bar">
                 <div class="metric-box">
                     <span>نسبة الصياغة البشرية النقية: 96% (بعد التعديل)</span>
@@ -268,19 +264,8 @@ async def home():
                 </div>
             </div>
 
-            <!-- Editors Grid -->
             <div class="editors-grid">
-                <!-- Result Box -->
-                <div class="editor-card">
-                    <div class="editor-header">
-                        <span>النص النهائي</span>
-                        <span id="resWordCount">0 كلمة</span>
-                    </div>
-                    <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة كأن أحداً يكتبه أمامك..."></textarea>
-                    <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
-                </div>
-
-                <!-- Input Box -->
+                <!-- Input Box (مربع الإدخال على اليمين) -->
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص الأصلي أو المستند</span>
@@ -288,6 +273,16 @@ async def home():
                     </div>
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه..." oninput="updateWordCounts()"></textarea>
                     <div style="font-size: 12px; color: #64748b; margin-top: 10px;">💡 يدعم النصوص المباشرة</div>
+                </div>
+
+                <!-- Result Box (مربع النتيجة على الشمال) -->
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <span>النص النهائي</span>
+                        <span id="resWordCount">0 كلمة</span>
+                    </div>
+                    <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة كأن أحداً يكتبه أمامك..."></textarea>
+                    <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
                 </div>
             </div>
         </div>
