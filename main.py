@@ -30,7 +30,7 @@ async def home():
                 background-color: var(--bg-main);
                 color: var(--text-main);
                 margin: 0;
-                padding: 15px;
+                padding: 10px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -39,8 +39,8 @@ async def home():
             }
             .container {
                 background: var(--card-bg);
-                padding: 20px 25px;
-                border-radius: 20px;
+                padding: 15px;
+                border-radius: 16px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 width: 100%;
                 max-width: 1100px;
@@ -51,74 +51,75 @@ async def home():
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
                 border-bottom: 1px solid var(--border-color);
-                padding-bottom: 15px;
-                flex-wrap: wrap;
-                gap: 15px;
+                padding-bottom: 12px;
+                gap: 10px;
             }
             .logo-area {
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             }
             .logo-area h1 {
-                font-size: 20px;
+                font-size: 17px;
                 margin: 0;
                 color: #fff;
             }
             .logo-area span {
                 background: linear-gradient(135deg, #8b5cf6, #ec4899);
                 color: white;
-                padding: 3px 10px;
+                padding: 2px 8px;
                 border-radius: 20px;
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: bold;
             }
             .top-badges {
                 display: flex;
-                gap: 8px;
+                gap: 6px;
                 align-items: center;
-                flex-wrap: wrap;
             }
             .badge {
                 background: #1e293b;
-                padding: 6px 12px;
+                padding: 5px 10px;
                 border-radius: 8px;
-                font-size: 12px;
+                font-size: 11px;
                 border: 1px solid var(--border-color);
                 color: var(--text-muted);
                 cursor: pointer;
+                white-space: nowrap;
             }
             .upgrade-btn {
                 background: linear-gradient(135deg, #8b5cf6, #6366f1);
                 color: white;
                 border: none;
-                padding: 6px 14px;
+                padding: 5px 10px;
                 border-radius: 8px;
+                font-size: 11px;
                 font-weight: bold;
                 cursor: pointer;
+                white-space: nowrap;
             }
             .controls-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
-                gap: 15px;
-                margin-bottom: 20px;
+                gap: 10px;
+                margin-bottom: 15px;
             }
             .control-item label {
                 display: block;
-                font-size: 13px;
+                font-size: 12px;
                 color: var(--text-muted);
-                margin-bottom: 6px;
+                margin-bottom: 4px;
             }
             .control-item select, .control-item button {
                 width: 100%;
-                padding: 12px;
+                padding: 10px;
                 background: #1e293b;
                 border: 1px solid var(--border-color);
                 color: white;
-                border-radius: 10px;
-                font-size: 14px;
+                border-radius: 8px;
+                font-size: 13px;
                 outline: none;
                 box-sizing: border-box;
             }
@@ -131,23 +132,23 @@ async def home():
             .metrics-bar {
                 display: none;
                 grid-template-columns: 1fr 1fr;
-                gap: 20px;
+                gap: 12px;
                 background: #0f172a;
-                padding: 15px;
-                border-radius: 12px;
-                margin-bottom: 20px;
+                padding: 12px;
+                border-radius: 10px;
+                margin-bottom: 15px;
                 border: 1px solid var(--border-color);
             }
             .metric-box {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 6px;
             }
             .metric-row {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 13px;
+                font-size: 12px;
             }
             .metric-label {
                 color: var(--text-muted);
@@ -160,8 +161,8 @@ async def home():
             }
             .progress-track {
                 background: #1e293b;
-                height: 8px;
-                border-radius: 4px;
+                height: 6px;
+                border-radius: 3px;
                 overflow: hidden;
                 direction: ltr;
             }
@@ -180,13 +181,13 @@ async def home():
             .editors-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 20px;
+                gap: 15px;
             }
             .editor-card {
                 background: #0f172a;
                 border: 1px solid var(--border-color);
-                border-radius: 14px;
-                padding: 15px;
+                border-radius: 12px;
+                padding: 12px;
                 display: flex;
                 flex-direction: column;
             }
@@ -194,45 +195,45 @@ async def home():
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 13px;
+                font-size: 12px;
                 color: var(--text-muted);
-                margin-bottom: 10px;
+                margin-bottom: 8px;
             }
             textarea {
                 width: 100%;
-                height: 220px;
+                height: 180px;
                 background: transparent;
                 border: none;
                 color: white;
-                font-size: 15px;
+                font-size: 14px;
                 resize: vertical;
                 outline: none;
                 box-sizing: border-box;
-                line-height: 1.6;
+                line-height: 1.5;
             }
             .upload-label {
                 background: #1e293b;
                 border: 1px solid var(--border-color);
                 color: #a855f7;
-                padding: 4px 10px;
+                padding: 3px 8px;
                 border-radius: 6px;
-                font-size: 12px;
+                font-size: 11px;
                 cursor: pointer;
             }
             .btn-row {
                 display: flex;
-                gap: 10px;
-                margin-top: 10px;
+                gap: 8px;
+                margin-top: 8px;
             }
             .copy-btn, .diff-btn {
                 flex: 1;
                 background: #1e293b;
                 color: white;
                 border: 1px solid var(--border-color);
-                padding: 8px;
-                border-radius: 8px;
+                padding: 7px;
+                border-radius: 6px;
                 cursor: pointer;
-                font-size: 13px;
+                font-size: 12px;
             }
             .diff-btn {
                 background: #3b82f6;
@@ -242,7 +243,8 @@ async def home():
                 text-align: center;
                 color: #fbbf24;
                 font-weight: bold;
-                margin: 10px 0;
+                margin: 8px 0;
+                font-size: 13px;
                 display: none;
             }
             /* Modals */
@@ -254,16 +256,16 @@ async def home():
                 justify-content: center;
                 align-items: center;
                 z-index: 1000;
-                padding: 15px;
+                padding: 10px;
                 box-sizing: border-box;
             }
             .modal-content {
                 background: #131b2e;
                 border: 1px solid var(--border-color);
-                padding: 25px;
-                border-radius: 16px;
+                padding: 20px;
+                border-radius: 14px;
                 width: 100%;
-                max-width: 800px;
+                max-width: 750px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8);
                 max-height: 85vh;
                 overflow-y: auto;
@@ -272,14 +274,14 @@ async def home():
             .pricing-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
-                gap: 15px;
-                margin-top: 20px;
+                gap: 12px;
+                margin-top: 15px;
             }
             .price-card {
                 background: #0f172a;
                 border: 1px solid var(--border-color);
-                border-radius: 12px;
-                padding: 15px;
+                border-radius: 10px;
+                padding: 12px;
                 text-align: center;
                 display: flex;
                 flex-direction: column;
@@ -292,18 +294,19 @@ async def home():
                 background: #ef4444;
                 color: white;
                 border: none;
-                padding: 6px 14px;
+                padding: 5px 12px;
                 border-radius: 6px;
                 cursor: pointer;
                 float: left;
+                font-size: 12px;
             }
             .history-item {
                 background: #0f172a;
-                padding: 10px;
-                border-radius: 8px;
-                margin-bottom: 10px;
+                padding: 8px 10px;
+                border-radius: 6px;
+                margin-bottom: 8px;
                 border: 1px solid var(--border-color);
-                font-size: 13px;
+                font-size: 12px;
             }
             .highlight-changed {
                 background-color: rgba(234, 179, 8, 0.3);
@@ -312,14 +315,45 @@ async def home():
                 border-radius: 3px;
             }
 
-            /* Responsive */
-            @media (max-width: 900px) {
-                .controls-grid { grid-template-columns: 1fr; }
-                .editors-grid { grid-template-columns: 1fr; }
-                .metrics-bar { grid-template-columns: 1fr; }
-                .pricing-grid { grid-template-columns: 1fr; }
-                .header-bar { flex-direction: column; align-items: stretch; }
-                .top-badges { justify-content: space-between; }
+            /* تحسينات فائقة الدقة للموبايل والشاشات الصغيرة */
+            @media (max-width: 768px) {
+                body { padding: 4px; }
+                .container { padding: 10px; border-radius: 12px; }
+                .header-bar {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 8px;
+                }
+                .logo-area {
+                    justify-content: space-between;
+                }
+                .top-badges {
+                    justify-content: space-between;
+                    width: 100%;
+                }
+                .badge, .upgrade-btn {
+                    flex: 1;
+                    text-align: center;
+                    padding: 8px 6px;
+                    font-size: 11px;
+                }
+                .controls-grid {
+                    grid-template-columns: 1fr;
+                    gap: 8px;
+                }
+                .editors-grid {
+                    grid-template-columns: 1fr;
+                    gap: 10px;
+                }
+                .metrics-bar {
+                    grid-template-columns: 1fr;
+                }
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                }
+                textarea {
+                    height: 140px;
+                }
             }
         </style>
     </head>
@@ -327,11 +361,11 @@ async def home():
         <div class="container">
             <div class="header-bar">
                 <div class="logo-area">
-                    <h1>منسق الذكاء الاصطناعي Pro</h1>
+                    <h1>منسق الذكاء الاصطناعي</h1>
                     <span>Pro</span>
                 </div>
                 <div class="top-badges">
-                    <div class="badge">المحاولات: <span id="attemptsCount" dir="ltr">3/3</span> متبقية</div>
+                    <div class="badge">المحاولات: <span id="attemptsCount" dir="ltr">3/3</span></div>
                     <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية الباقة</button>
                     <div class="badge" onclick="openHistoryModal()">📜 السجل</div>
                 </div>
@@ -357,7 +391,7 @@ async def home():
                     </div>
                     <div class="control-item">
                         <label>&nbsp;</label>
-                        <button type="submit" id="submitBtn" class="primary-action-btn">✨ إعادة الصياغة المباشرة</button>
+                        <button type="submit" id="submitBtn" class="primary-action-btn">✨ إعادة الصياغة</button>
                     </div>
                 </div>
 
@@ -384,11 +418,11 @@ async def home():
             <div class="editors-grid">
                 <div class="editor-card">
                     <div class="editor-header">
-                        <span>النص الأصلي (الذكاء الاصطناعي)</span>
+                        <span>النص الأصلي (AI)</span>
                         <div>
                             <label class="upload-label" for="fileInput">📁 رفع ملف</label>
                             <input type="file" id="fileInput" accept=".txt,.doc,.docx" style="display:none;" onchange="handleFileUpload(event)">
-                            <span id="origWordCount" style="margin-right: 8px;" dir="ltr">0 كلمة</span>
+                            <span id="origWordCount" style="margin-right: 6px;" dir="ltr">0 كلمة</span>
                         </div>
                     </div>
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
@@ -396,12 +430,12 @@ async def home():
 
                 <div class="editor-card">
                     <div class="editor-header">
-                        <span>النص المولد بشرياً (الناتج النهائي)</span>
+                        <span>الناتج النهائي (بشري)</span>
                         <span id="resWordCount" dir="ltr">0 كلمة</span>
                     </div>
                     <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة..."></textarea>
                     <div class="btn-row">
-                        <button class="copy-btn" onclick="copyResult()">📋 نسخ النص</button>
+                        <button class="copy-btn" onclick="copyResult()">📋 نسخ</button>
                         <button class="diff-btn" onclick="openDiffModal()">🔍 تظليل التعديلات</button>
                     </div>
                 </div>
@@ -411,31 +445,31 @@ async def home():
         <div id="pricingModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
-                <h2 style="margin-top:0; color:#fff; text-align:center;">اختر الباقة المناسبة لك</h2>
+                <h2 style="margin-top:0; color:#fff; text-align:center; font-size:18px;">اختر الباقة المناسبة لك</h2>
                 <div class="pricing-grid">
                     <div class="price-card">
                         <div>
-                            <h3 style="color:#94a3b8; margin-top:0;">الباقة المجانية</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
-                            <p style="font-size:12px; color:#94a3b8;">3 محاولات مجانية يومياً</p>
+                            <h3 style="color:#94a3b8; margin-top:0; font-size:15px;">المجانية</h3>
+                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
+                            <p style="font-size:11px; color:#94a3b8;">3 محاولات يومياً</p>
                         </div>
-                        <button style="width:100%; padding:10px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:10px;" onclick="closePricingModal()">باقتك الحالية</button>
+                        <button style="width:100%; padding:8px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:8px; font-size:12px;" onclick="closePricingModal()">باقتك الحالية</button>
                     </div>
                     <div class="price-card">
                         <div>
-                            <h3 style="color:#38bdf8; margin-top:0;">الباقة المحددة</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$10 / mo</p>
-                            <p style="font-size:12px; color:#94a3b8;">مخصصة لعدد 50 مقال شهرياً</p>
+                            <h3 style="color:#38bdf8; margin-top:0; font-size:15px;">المحددة</h3>
+                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$10 / mo</p>
+                            <p style="font-size:11px; color:#94a3b8;">50 مقال شهرياً</p>
                         </div>
-                        <button style="width:100%; padding:10px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
+                        <button style="width:100%; padding:8px; background:#0284c7; color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
                     </div>
                     <div class="price-card pro">
                         <div>
-                            <h3 style="color:#8b5cf6; margin-top:0;">باقة Pro</h3>
-                            <p style="font-size:22px; font-weight:bold; color:#fff;" dir="ltr">$25 / mo</p>
-                            <p style="font-size:12px; color:#94a3b8;">محاولات غير محدودة بالكامل</p>
+                            <h3 style="color:#8b5cf6; margin-top:0; font-size:15px;">باقة Pro</h3>
+                            <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$25 / mo</p>
+                            <p style="font-size:11px; color:#94a3b8;">غير محدودة</p>
                         </div>
-                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
+                        <button style="width:100%; padding:8px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:8px; cursor:pointer; font-size:12px;" onclick="alert('قريباً سيتم تفعيل بوابة الدفع بالدولار!')">اشترك الآن</button>
                     </div>
                 </div>
             </div>
@@ -444,17 +478,17 @@ async def home():
         <div id="historyModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeHistoryModal()">إغلاق</button>
-                <h2 style="margin-top:0; color:#fff;">سجل المحاولات السابقة</h2>
-                <div id="historyContainer" style="margin-top: 15px;"></div>
+                <h2 style="margin-top:0; color:#fff; font-size:18px;">سجل المحاولات السابقة</h2>
+                <div id="historyContainer" style="margin-top: 12px;"></div>
             </div>
         </div>
 
         <div id="diffModal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeDiffModal()">إغلاق</button>
-                <h2 style="margin-top:0; color:#fff;">تظليل الكلمات والتعديلات الجديدة</h2>
-                <p style="font-size: 13px; color: var(--text-muted);">الكلمات المظللة باللون الأصفر هي التغييرات الجذرية التي تم إجراؤها لتحويل النص إلى سياق بشري طبيعي:</p>
-                <div id="diffContainer" style="background: #0f172a; padding: 15px; border-radius: 10px; margin-top: 15px; line-height: 1.8; font-size: 15px; color: #fff; max-height: 50vh; overflow-y: auto;"></div>
+                <h2 style="margin-top:0; color:#fff; font-size:18px;">تظليل التعديلات الجديدة</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">الكلمات المظللة باللون الأصفر هي التغييرات الجذرية لتحويل النص إلى سياق بشري:</p>
+                <div id="diffContainer" style="background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 12px; line-height: 1.7; font-size: 14px; color: #fff; max-height: 50vh; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -479,8 +513,8 @@ async def home():
                 } else {
                     container.innerHTML = history.map((item, index) => `
                         <div class="history-item">
-                            <div style="display: flex; justify-content: space-between; color: #8b5cf6; margin-bottom: 5px;">
-                                <span>محاولة رقم #${index + 1} (${item.tone})</span>
+                            <div style="display: flex; justify-content: space-between; color: #8b5cf6; margin-bottom: 4px;">
+                                <span>محاولة #${index + 1} (${item.tone})</span>
                                 <span dir="ltr">${item.date}</span>
                             </div>
                             <div style="color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">الناتج: ${item.result}</div>
@@ -495,20 +529,17 @@ async def home():
                 const originalText = document.getElementById('inputText').value;
                 const resultText = document.getElementById('resultText').value;
                 if(!originalText || !resultText) {
-                    alert('يجب أن يتوفر نص أصلي ونص ناتج لعمل المقارنة والتظليل');
+                    alert('يجب توفر نص أصلي وناتج لعمل المقارنة والتظليل');
                     return;
                 }
-
                 const origWords = originalText.trim().split(/\\s+/);
                 const resWords = resultText.trim().split(/\\s+/);
-
                 let highlightedHTML = resWords.map(word => {
                     if (!origWords.includes(word)) {
                         return `<span class="highlight-changed">${word}</span>`;
                     }
                     return word;
                 }).join(' ');
-
                 document.getElementById('diffContainer').innerHTML = highlightedHTML;
                 document.getElementById('diffModal').style.display = 'flex';
             }
@@ -638,7 +669,6 @@ async def humanize_text(text: str = Form(...), tone: str = Form("صحفي سلس
     }
 
     try:
-        # استخدام معاملات requests الصحيحة بدون الحاجة لـ json.dumps اليدوية
         response = requests.post(url, json=payload, headers=headers)
         res_data = response.json()
         if "choices" in res_data:
