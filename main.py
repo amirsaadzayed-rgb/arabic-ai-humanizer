@@ -140,7 +140,7 @@ async def home():
                 border: 1px solid var(--border-color);
             }
             .metric-box span {
-                font-size: 12px;
+                font-size: 13px;
                 color: var(--text-muted);
                 display: block;
                 margin-bottom: 5px;
@@ -151,7 +151,7 @@ async def home():
                 border-radius: 4px;
                 overflow: hidden;
                 position: relative;
-                direction: rtl; /* ضمان بدء الامتلاء من اليمين لليسار بشكل صحيح تماماً */
+                direction: rtl;
             }
             .progress-fill-human {
                 background: #10b981;
@@ -233,6 +233,50 @@ async def home():
                 margin: 10px 0;
                 display: none;
             }
+            /* Modal Styles */
+            .modal-overlay {
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.7);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+            .modal-content {
+                background: #131b2e;
+                border: 1px solid var(--border-color);
+                padding: 30px;
+                border-radius: 16px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            }
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            .price-card {
+                background: #0f172a;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+            }
+            .price-card.pro {
+                border-color: #8b5cf6;
+            }
+            .close-modal {
+                background: #ef4444;
+                color: white;
+                border: none;
+                padding: 6px 14px;
+                border-radius: 6px;
+                cursor: pointer;
+                float: left;
+            }
         </style>
     </head>
     <body>
@@ -244,7 +288,7 @@ async def home():
                 </div>
                 <div class="top-badges">
                     <div class="badge">المحاولات: <span id="attemptsCount">3/3</span> متبقية</div>
-                    <button class="upgrade-btn" onclick="openUpgrade()">✨ ترقية الباقة</button>
+                    <button class="upgrade-btn" onclick="openPricingModal()">✨ ترقية الباقة</button>
                     <div class="badge" style="cursor:pointer;" onclick="alert('سجل المحاولات فارغ حالياً')">📜 السجل</div>
                 </div>
             </div>
@@ -276,13 +320,14 @@ async def home():
                 <div id="loading" class="loading">⏳ جارٍ المعالجة وإزالة البصمة الآلية بدقة عالية...</div>
             </form>
 
+            <!-- مقاييس النسبة مع تصحيح الاتجاه المعكوس لـ BiDi -->
             <div class="metrics-bar">
                 <div class="metric-box">
-                    <span id="humanMetricLabel">نسبة الصياغة البشرية النقية: 97% (بعد التعديل)</span>
+                    <span>نسبة الصياغة البشرية النقية: <span dir="ltr">97%</span> <span dir="ltr" style="color:#94a3b8; font-size:11px;">(بعد التعديل)</span></span>
                     <div class="progress-track"><div id="humanBar" class="progress-fill-human" style="width: 97%;"></div></div>
                 </div>
                 <div class="metric-box">
-                    <span id="aiMetricLabel">نسبة النمط الآلي (AI Pattern): 3% (بعد التعديل)</span>
+                    <span>نسبة النمط الآلي: <span dir="ltr">3% (AI Pattern)</span> <span dir="ltr" style="color:#94a3b8; font-size:11px;">(بعد التعديل)</span></span>
                     <div class="progress-track"><div id="aiBar" class="progress-fill-ai" style="width: 3%;"></div></div>
                 </div>
             </div>
@@ -295,7 +340,7 @@ async def home():
                         <div>
                             <label class="upload-label" for="fileInput">📁 رفع ملف</label>
                             <input type="file" id="fileInput" accept=".txt,.doc,.docx" style="display:none;" onchange="handleFileUpload(event)">
-                            <span id="origWordCount" style="margin-right: 8px;">0 كلمة</span>
+                            <span id="origWordCount" style="margin-right: 8px;" dir="ltr">0 كلمة</span>
                         </div>
                     </div>
                     <textarea id="inputText" placeholder="انسخ النص هنا أو الصقه أو ارفع ملفاً..." oninput="updateWordCounts()"></textarea>
@@ -306,10 +351,32 @@ async def home():
                 <div class="editor-card">
                     <div class="editor-header">
                         <span>النص النهائي</span>
-                        <span id="resWordCount">0 كلمة</span>
+                        <span id="resWordCount" dir="ltr">0 كلمة</span>
                     </div>
                     <textarea id="resultText" readonly placeholder="سيتم كتابة النص المعاد صياغته هنا مباشرة كأن أحداً يكتبه أمامك..."></textarea>
                     <button class="copy-btn" onclick="copyResult()">📋 نسخ النص الناتج</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Modal -->
+        <div id="pricingModal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closePricingModal()">إغلاق</button>
+                <h2 style="margin-top:0; color:#fff; text-align:center;">اختر الباقة المناسبة لك</h2>
+                <div class="pricing-grid">
+                    <div class="price-card">
+                        <h3 style="color:#94a3b8;">الباقة المجانية</h3>
+                        <p style="font-size:24px; font-weight:bold; color:#fff;">0 ج.م</p>
+                        <p style="font-size:13px; color:#94a3b8;">3 محاولات مجانية يومياً</p>
+                        <button style="width:100%; padding:10px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:10px;" onclick="closePricingModal()">باقتك الحالية</button>
+                    </div>
+                    <div class="price-card pro">
+                        <h3 style="color:#8b5cf6;">باقة Pro الاحترافية</h3>
+                        <p style="font-size:24px; font-weight:bold; color:#fff;">غير محدودة</p>
+                        <p style="font-size:13px; color:#94a3b8;">محاولات بلا حدود + دعم فني مميز</p>
+                        <button style="width:100%; padding:10px; background:linear-gradient(135deg, #8b5cf6, #ec4899); color:white; border:none; border-radius:6px; margin-top:10px; cursor:pointer;" onclick="alert('قريباً سيتم ربط بوابة الدفع الإلكتروني!')">اشترك الآن</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -324,6 +391,13 @@ async def home():
                 currentAttempts = parseInt(currentAttempts);
             }
             document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
+
+            function openPricingModal() {
+                document.getElementById('pricingModal').style.display = 'flex';
+            }
+            function closePricingModal() {
+                document.getElementById('pricingModal').style.display = 'none';
+            }
 
             function updateWordCounts() {
                 const text = document.getElementById('inputText').value;
@@ -343,15 +417,11 @@ async def home():
                 reader.readAsText(file, 'UTF-8');
             }
 
-            function openUpgrade() {
-                alert('🚀 باقة Pro تمنحك محاولات غير محدودة، دعم فني متقدم، وميزات صياغة فائقة. قريباً سيتم تفعيل بوابة الدفع!');
-            }
-
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 if (currentAttempts <= 0) {
-                    alert('لقد استنفدت محاولاتك المجانية (3/3). يرجى الضغط على زر "ترقية الباقة" للمتابعة بلا حدود.');
+                    openPricingModal();
                     return;
                 }
 
@@ -388,11 +458,6 @@ async def home():
                         currentAttempts--;
                         localStorage.setItem('ai_humanizer_attempts', currentAttempts);
                         document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
-
-                        document.getElementById('humanMetricLabel').innerText = 'نسبة الصياغة البشرية النقية: 98% (بعد التعديل)';
-                        document.getElementById('humanBar').style.width = '98%';
-                        document.getElementById('aiMetricLabel').innerText = 'نسبة النمط الآلي (AI Pattern): 2% (بعد التعديل)';
-                        document.getElementById('aiBar').style.width = '2%';
 
                     } else {
                         alert('حدث خطأ: ' + (data.detail || 'يرجى المحاولة لاحقاً'));
