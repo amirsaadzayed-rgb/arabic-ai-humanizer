@@ -439,7 +439,7 @@ async def home():
                     <div class="price-card">
                         <h3 style="color:#94a3b8; margin-top:0; font-size:15px;">المجانية</h3>
                         <p style="font-size:20px; font-weight:bold; color:#fff;" dir="ltr">$0</p>
-                        <p style="font-size:11px; color:#94a3b8;">3 محاولات يومياً</p>
+                        <p style="font-size:11px; color:#94a3b8;">3 محاولات تجريبية إجمالية</p>
                         <button style="width:100%; padding:8px; background:#1e293b; color:white; border:none; border-radius:6px; margin-top:8px; font-size:12px;" onclick="closePricingModal()">باقتك الحالية</button>
                     </div>
                     <div class="price-card">
@@ -476,10 +476,7 @@ async def home():
         </div>
 
         <script>
-            // تعريف إيميل المدير الحصري الخاص بك
             const ADMIN_EMAIL = "amirsaadzayed@gmail.com"; 
-
-            // لا يتم فرض أي إيميل تلقائياً على الزوار الجدد
             let currentUser = localStorage.getItem('ai_user_email') || null;
 
             let maxAttempts = 3;
@@ -487,13 +484,18 @@ async def home():
 
             function checkUserAttempts() {
                 if (!currentUser) {
-                    document.getElementById('attemptsCount').innerText = '3/3 (زائر)';
+                    let guestAttempts = localStorage.getItem('attempts_guest');
+                    if (guestAttempts === null) {
+                        currentAttempts = maxAttempts;
+                        localStorage.setItem('attempts_guest', currentAttempts);
+                    } else {
+                        currentAttempts = parseInt(guestAttempts);
+                    }
+                    document.getElementById('attemptsCount').innerText = currentAttempts + '/3 (زائر)';
                     document.getElementById('loginBtnText').innerText = '👤 تسجيل الدخول';
-                    currentAttempts = 3;
                     return;
                 }
 
-                // إذا كان الإيميل المدخل هو إيميل المدير الخاص بك، تمنح الصلاحيات المطلقة
                 if (currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('attemptsCount').innerText = '∞ (مدير)';
                     document.getElementById('loginBtnText').innerText = '👑 ' + currentUser.split('@')[0];
@@ -595,13 +597,9 @@ async def home():
             document.getElementById('humanizeForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                if (!currentUser) {
-                    openLoginModal();
-                    alert('الرجاء تسجيل الدخول ببريدك الإلكتروني أولاً لبدء استخدام المحاولات المجانية');
-                    return;
-                }
-
-                if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && currentAttempts <= 0) {
+                if (currentUser && currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    // المدير بلا حدود
+                } else if (currentAttempts <= 0) {
                     openPricingModal();
                     return;
                 }
@@ -636,7 +634,11 @@ async def home():
                         const resWords = data.result.trim().split(/\\s+/).length;
                         document.getElementById('resWordCount').innerText = resWords + ' كلمة';
                         
-                        if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                        if (!currentUser) {
+                            currentAttempts--;
+                            localStorage.setItem('attempts_guest', currentAttempts);
+                            document.getElementById('attemptsCount').innerText = currentAttempts + '/3 (زائر)';
+                        } else if (currentUser.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                             currentAttempts--;
                             localStorage.setItem('attempts_' + currentUser, currentAttempts);
                             document.getElementById('attemptsCount').innerText = currentAttempts + '/' + maxAttempts;
@@ -648,7 +650,7 @@ async def home():
                         document.getElementById('humanMetricVal').innerText = data.result_human_score + '%';
                         document.getElementById('humanBar').style.width = data.result_human_score + '%';
 
-                        let historyKey = 'ai_history_' + currentUser;
+                        let historyKey = 'ai_history_' + (currentUser || 'guest');
                         let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
                         history.unshift({
                             tone: tone,
